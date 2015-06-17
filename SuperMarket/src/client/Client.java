@@ -1,12 +1,9 @@
 
-package supermarket;
+package client;
 
-import java.io.InputStream;
 import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
-import org.omg.SendingContext.RunTime;
-
 
 public class Client
 {
@@ -20,10 +17,11 @@ public class Client
         try
         {
             socket = new Socket("localhost", 12345);
-            System.out.println("Client Connected!");
+            System.out.println("::: Client Connected! :)");
+            System.out.println("::: Awaiting the server... ");
 
-            scanner = new Scanner (System.in);
-            input = new Scanner (socket.getInputStream());
+            scanner = new Scanner(System.in);
+            input = new Scanner(socket.getInputStream());
             output = new PrintStream(socket.getOutputStream());
             
             new Thread(new ClientSendThread()).start();
@@ -33,7 +31,7 @@ public class Client
         }
         catch (Exception ex)
         {
-            System.out.println("Conection Error :(");
+            System.out.println("::: Client - Connection Error! :( :::");
             return (false);
         }
     }     
@@ -41,26 +39,30 @@ public class Client
     class ClientSendThread implements Runnable
     {
         @Override
-        public void run()
+        public synchronized void run()
         {
-            while(scanner.hasNextLine()){
+            while(scanner.hasNextLine())
+            {
                 String command = scanner.nextLine();
-                
                 output.println(command);
             }
         }
     }
-    class ClientReadThread implements Runnable{
-
+    
+    class ClientReadThread implements Runnable
+    {
         @Override
-        public void run() {
-            while(input.hasNextLine()){
+        public synchronized void run() 
+        {
+            while(input.hasNextLine())
+            {
                 System.out.println(input.nextLine());
             }
         }
-        
     }
-    public static void main (String[] args){
+    
+    public static void main (String[] args)
+    {
         Client c = new Client();
         c.connect();
     }

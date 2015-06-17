@@ -8,23 +8,35 @@ import java.io.PrintWriter;
 
 public class User 
 {
+    private int codUser;
     private String name;   
     private String address;
     private String email;
-    private int telephone;
-    private int ID;
-    private int password;
+    private String telephone;
+    private String ID;
+    private String password;
 
-    public User(String name, String address, String email, int telephone, int ID, int password)
+    public User(int codUser, String name, String address, String email, String telephone, String ID, String password)
     {
         this.name = name;
         this.address = address;
         this.email = email;
         this.telephone = telephone;
         this.ID = ID;
+        this.codUser = codUser;
         this.password = password;
     }
 
+    public int getCodUser() 
+    {
+        return codUser;
+    }
+
+    public void setCodUser(int codUser) 
+    {
+        this.codUser = codUser;
+    }
+    
     public String getName()
     {
         return name;
@@ -55,31 +67,32 @@ public class User
         this.email = email;
     }
 
-    public int getTelephone()
+    public String getTelephone()
     {
         return telephone;
     }
 
-    public void setTelephone(int telephone)
+    public void setTelephone(String telephone)
     {
         this.telephone = telephone;
     }
 
-    public int getID()
+    public String getID()
     {
         return ID;
     }
 
-    public void setID(int ID) {
+    public void setID(String ID) 
+    {
         this.ID = ID;
     }
 
-    public int getPassword() 
+    public String getPassword() 
     {
         return password;
     }
 
-    public void setPassword(int password)
+    public void setPassword(String password)
     {
         this.password = password;
     }
@@ -99,6 +112,8 @@ public class User
             
             
             // Os comandos abaixo salvam os dados no arquivo, após cada dado adicionado é acrescentada uma virgula para separa-los.
+            pw.print(this.getCodUser());
+            pw.print(",");
             pw.print(this.getName());
             pw.print(",");
             pw.print(this.getAddress());
@@ -110,7 +125,6 @@ public class User
             pw.print(this.getID());
             pw.print(",");
             pw.print(this.getPassword());
-            pw.print(",");
             
             pw.close();
             fw.close();
@@ -121,4 +135,12 @@ public class User
             System.out.println("Can't write in the file.");
         }
     }
+
+    @Override
+    public String toString() 
+    {
+        return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
+    }
+    
+    
 }
