@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import supermarket.User;
+import supermarket.entities.User;
 import static server.Server.USERS_FILE;
 
 

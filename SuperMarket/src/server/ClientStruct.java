@@ -1,7 +1,7 @@
 
 package server;
 
-import supermarket.User;
+import supermarket.entities.User;
 
 // classe da qual será formada a lista de clientes
 class ClientStruct

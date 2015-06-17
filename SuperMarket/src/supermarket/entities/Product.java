@@ -1,5 +1,5 @@
 
-package supermarket;
+package supermarket.entities;
 
 import java.util.Calendar;
 import java.util.GregorianCalendar;

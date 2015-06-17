@@ -1,5 +1,5 @@
 
-package supermarket;
+package supermarket.entities;
 
 
 public class Category 

@@ -1,5 +1,5 @@
 
-package supermarket;
+package supermarket.entities;
 
 import java.io.File;
 import java.io.FileWriter;
