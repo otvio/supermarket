@@ -7,63 +7,52 @@ import java.util.Scanner;
 
 public class Client
 {
-    private Scanner input;
-    private PrintStream output;
     private Socket socket;
     private Scanner scanner;
+    ServerListener sl;
     
-    public boolean connect()
+    public void connect() throws Exception
     {
-        try
-        {
             socket = new Socket("localhost", 12345);
             System.out.println("::: Client Connected! :)");
             System.out.println("::: Awaiting the server... ");
 
-            scanner = new Scanner(System.in);
-            input = new Scanner(socket.getInputStream());
-            output = new PrintStream(socket.getOutputStream());
-            
+            sl = new ServerListener(new PrintStream(socket.getOutputStream()), new Scanner(socket.getInputStream()));
+            new Thread(sl).start();
             new Thread(new ClientSendThread()).start();
-            new Thread(new ClientReadThread()).start();
             
-            return (true);
-        }
-        catch (Exception ex)
-        {
-            System.out.println("::: Client - Connection Error! :( :::");
-            return (false);
-        }
     }     
        
     class ClientSendThread implements Runnable
     {
         @Override
-        public synchronized void run()
+        public void run()
         {
             while(scanner.hasNextLine())
             {
                 String command = scanner.nextLine();
-                output.println(command);
-            }
-        }
-    }
-    
-    class ClientReadThread implements Runnable
-    {
-        @Override
-        public synchronized void run() 
-        {
-            while(input.hasNextLine())
-            {
-                System.out.println(input.nextLine());
+                sl.sendToServer(command);
             }
         }
     }
     
     public static void main (String[] args)
     {
-        Client c = new Client();
-        c.connect();
+        Client c;
+        
+        try 
+        {
+            c = new Client();
+            c.scanner = new Scanner(System.in);
+            c.connect();
+        } 
+        catch (Exception ex) 
+        {
+            System.out.println("::: I'm so sorry! Client Error! :( :::");
+        }
+        finally
+        {
+            //System.out.println("\n\n:::Thank you for using this program. :::");
+        }
     }
 }
