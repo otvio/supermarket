@@ -24,85 +24,92 @@ public class ClientMenu
     }
 
 
-    public void printMenu()
+    public void menu()
     {        
-        do
-        {
-            System.out.println("\n\t:::::    Welcome to the LORMarket, " + nameClient + "    :::::\n");
-            System.out.println("1 - Search a product");
-            System.out.println("2 - List all the products.");       
-            System.out.println("3 - Desires list.");
-            System.out.println("4 - Exit.");
-            
-            cases = sc.nextLine();
-            
-        }while(!("1").equals(cases) && !("2").equals(cases) && !("3").equals(cases) && !("4").equals(cases));
         
-        
-        switch (cases)
+        while(!cases.equals("4"))
         {
-            case "1":
-                searchProduct();
-                break;
-                
-            case "2":
-                listAllProducts();
-                break;
-                
-            case "3":
-                desireList();
-                break; 
-                
-           
-        }
-         if (!("4").equals(cases))
+            do
+            {
+                System.out.println("\n\t:::::    Welcome to the LORMarket, " + nameClient + "    :::::\n");                
+                System.out.println("1 - List all the products.");       
+                System.out.println("2 - Desires list.");
+                System.out.println("3 - Exit.");
+
+                cases = sc.nextLine();
+
+            }while(!("1").equals(cases) && !("2").equals(cases) && !("3").equals(cases) && !("4").equals(cases));
+
+
+            switch (cases)
+            {               
+                case "1":
+                    listAllProducts();
+                    break;
+
+                case "2":
+                    desireList();
+                    break;                 
+
+            }
+            if (!("3").equals(cases))
             {
                 System.out.println("\nPressione ENTER para continuar...");
                 cases = sc.nextLine();                
-                cases = (cases.equals("10")) ? "-" : cases;
+                cases = (cases.equals("3")) ? "-" : cases;
             }
-    }
+        } 
+    }  
     
-    public void searchProduct()
+    public void listAllProducts()
     {
         int index = 0, productnumber;
-        
-        
+                
+        System.out.println("\n ...::: All products  :::...\n\n");
         for(Product p : productList)
         {
             System.out.println("Product " + (index + 1)+ "." );
             p.printProduct(categoryList.get(p.getCodCategory()));
             index++;
-        }
-        System.out.println("What product do you want to buy?");
-        
-        productnumber = sc.nextInt();
-        
-        productList.get(productnumber - 1).setStockUnits(productList.get(productnumber - 1).getStockUnits() - 1);
-        
-    }
-    
-    public void listAllProducts()
-    {
-        System.out.println("\n ...::: All products  :::...\n\n");
-        for(Product p : productList)
-            p.printProduct(categoryList.get(p.getCodCategory()));
+        }            
         
         do
         {
-            System.out.println("Shop now any product? (Y)-Yes , (N)-No" );
+            System.out.println("Shop now any product? (Y)-Yes , (N)-No " );
             cases = sc.nextLine().toUpperCase();
             
         }while(!cases.equals("Y") && !cases.equals("N"));
         
-        if(cases == "Y")
+        if(cases.equals("Y"))
         {
-            
-        }  
-        
-        else
-            printMenu();
-  
+             System.out.println("What product do you want to buy? ");
+             
+             productnumber = sc.nextInt();
+             
+             if(productList.get(productnumber -1).getStockUnits() > 0)
+                productList.get(productnumber -1).setStockUnits(productList.get(productnumber - 1).getStockUnits() - 1);
+             else
+             {
+                 System.out.println("The product isn't available. =(");
+                 
+                 do
+                 {
+                     System.out.println("Do you want to be informed when the product be available? (Y)-Yes , (N)-No ");
+                     cases = sc.nextLine().toUpperCase();
+
+                 }while(!cases.equals("Y") && !cases.equals("N"));
+                 
+                 if(cases.equals("Y"))
+                 {
+                     //fazer notificação do usuário caso ele solicite o produto não existente
+                 }
+                 else
+                 {
+                     
+                 }
+                 
+             }             
+        }   
     }
     
     public void desireList()
