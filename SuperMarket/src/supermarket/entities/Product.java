@@ -49,7 +49,7 @@ public class Product
         );
     }
     
-    public void addProduct(){
+    public void addFileProduct(){
         
         try{
             File fp = new File(PRODUCTS_FILE);

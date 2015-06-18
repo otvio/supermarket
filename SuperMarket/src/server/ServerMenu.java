@@ -56,7 +56,7 @@ public class ServerMenu {
                 
                 Product product = new Product(/*fazer funçoes para pegar os codigo*/0, 0, 0, units, units, price, nameProduct, expirationdate);
                 
-                product.addProduct();
+                product.addFileProduct();
             }
             
             else if(choice == 2){
@@ -82,5 +82,33 @@ public class ServerMenu {
             
         }while(choice != 4);
     }
+    
+    public void GetDesireList(){
+        List <ClientStruct> desireList = new ArrayList<>();
+        
+        
+        
+    }
     // Receber os dados do novo produto e gravar no arquivo as respectivas informações
+    public void createFileDesire(ClientStruct clientStruct){
+        
+        try{
+            File fp = new File(PRODUCTS_FILE);
+            FileWriter fw = new FileWriter(fp, true);
+            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+        
+            if(!fp.exists()){
+                fp.createNewFile();
+            }
+            
+            pw.print(clientStruct.product.getCodProduct());
+            pw.print(",");
+            pw.print(clientStruct.product.getStockUnits());
+            pw.print(",");
+            pw.println(clientStruct.user.getCodUser());
+        }
+        catch(Exception e){
+            System.out.println("\n:::Can't bring all the list to the server:::");
+        }
+    }
 }

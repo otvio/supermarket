@@ -66,6 +66,7 @@ public class Server
         
         servermenu.showMenu();
     }
+    
     public List<Product> BringList(){
         
         List <Product> list = new ArrayList<> ();
@@ -91,8 +92,6 @@ public class Server
         catch(Exception e){
             System.out.println("Something is wrong :(");
         }
-        
-       
         
         return list;
     }
