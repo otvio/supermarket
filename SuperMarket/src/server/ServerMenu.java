@@ -14,8 +14,10 @@ import java.util.List;
 import java.util.Scanner;
 import static server.Server.DESIRE_FILE;
 import static server.Server.PRODUCTS_FILE;
+import static server.Server.SUPPLIERS_FILE;
 import static server.Server.USERS_FILE;
 import supermarket.entities.Product;
+import supermarket.entities.Supplier;
 import supermarket.entities.User;
 
 
@@ -35,18 +37,21 @@ public class ServerMenu {
         Server server = new Server();
         List <Product> listProducts = new ArrayList<>();
         listProducts = server.BringList();
+        
+        List <Supplier> listSupplier = new ArrayList<>();
+        
         //List <User> listUser = new ArrayList<>();
         
         do{
             System.out.println("\n1 - Register new products");
             System.out.println("2 - List all the products");
             System.out.println("3 - Send a notification to the client");
-            System.out.println("4 - Quit");
+            System.out.println("4 - Registering new Supplier");
+            System.out.println("5 - Quit");
                 
             choice = scanner.nextInt();
             
             if(choice == 1){
-                
                 Collections.sort(listProducts, new Comparator<Product>(){
 
                     @Override
@@ -96,12 +101,25 @@ public class ServerMenu {
             else if(choice == 3){
                 //Send notification to the client
             }
+            else if(choice == 4){
+                
+                Collections.sort(listProducts, new Comparator<Product>(){
+
+                    @Override
+                    public int compare(Product o1, Product o2) {
+                        return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
+                    }
+                });
+                
+                System.out.println("\nEnter with the name of the supplier:");
+            }
             
             
-        }while(choice != 4);
+        }while(choice != 5);
     }
     
     public List <ClientStruct> getDesireList(int codeProduct){
+        
         List <ClientStruct> desireList = new ArrayList<>();
         String line;
         
@@ -113,7 +131,7 @@ public class ServerMenu {
                 
                 String[] desires = line.split(",");
                 // pegar o conteudo em arquivo e guardar na lista
-                desireList.add();
+               // desireList.add();
             }
         }
         catch(Exception e){
@@ -163,4 +181,28 @@ public class ServerMenu {
 
         return listUsers;
     }
+    
+    public List<Supplier> getAllSuppler(){
+        
+        List<Supplier> listSupplier = new ArrayList<>();
+        String line;
+        
+        try{
+            BufferedReader buffreader = new BufferedReader(new FileReader(SUPPLIERS_FILE));
+            
+            while(buffreader.ready()){
+                line = buffreader.readLine();
+                
+                String[] desires = line.split(",");
+                // pegar o conteudo em arquivo e guardar na lista
+                listSupplier.add(new Supplier(Integer.parseInt(desires[0]), desires[1], desires[2],  desires[3]));
+            }
+        }
+        catch(Exception e){
+            System.out.println("\n::: Can't get the Supplier's list :::");
+        }
+
+        return listSupplier;     
+    }
+    
 }
