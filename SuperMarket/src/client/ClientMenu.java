@@ -30,10 +30,9 @@ public class ClientMenu
         {
             System.out.println("\n\t:::::    Welcome to the LORMarket, " + nameClient + "    :::::\n");
             System.out.println("1 - Search a product");
-            System.out.println("2 - List all the products.");
-            System.out.println("3 - Place order.");
-            System.out.println("4 - List desires.");
-            System.out.println("5 - Exit.");
+            System.out.println("2 - List all the products.");       
+            System.out.println("3 - Desires list.");
+            System.out.println("4 - Exit.");
             
             cases = sc.nextLine();
             
@@ -54,11 +53,9 @@ public class ClientMenu
                 desireList();
                 break; 
                 
-            case "4":
-                placeOrder();
-                break; 
+           
         }
-         if (!("5").equals(cases))
+         if (!("4").equals(cases))
             {
                 System.out.println("\nPressione ENTER para continuar...");
                 cases = sc.nextLine();                
@@ -68,8 +65,20 @@ public class ClientMenu
     
     public void searchProduct()
     {
-        System.out.println(nameClient + ", digit the product category: ");
+        int index = 0, productnumber;
         
+        
+        for(Product p : productList)
+        {
+            System.out.println("Product " + (index + 1)+ "." );
+            p.printProduct(categoryList.get(p.getCodCategory()));
+            index++;
+        }
+        System.out.println("What product do you want to buy?");
+        
+        productnumber = sc.nextInt();
+        
+        productList.get(productnumber - 1).setStockUnits(productList.get(productnumber - 1).getStockUnits() - 1);
         
     }
     
@@ -89,7 +98,8 @@ public class ClientMenu
         if(cases == "Y")
         {
             
-        } 
+        }  
+        
         else
             printMenu();
   

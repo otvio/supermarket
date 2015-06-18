@@ -8,7 +8,8 @@ import supermarket.entities.Product;
 
 public class ServerMenu {
     
-    public void showMenu(){
+    public void showMenu()
+    {
         int choice = 0;
         String nameProduct;
         String expirationdate;
@@ -17,14 +18,16 @@ public class ServerMenu {
         Scanner scanner = new Scanner(System.in);
         Scanner scannerstring = new Scanner(System.in);
         
-        do{
+        do
+        {
                 System.out.println("\n1 - Register new products");
                 System.out.println("2 - List all the products");
                 System.out.println("3 - Send a notification to the client");
                 System.out.println("4 - Quit");
             choice = scanner.nextInt();
             
-            if(choice == 1){
+            if(choice == 1)
+            {
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
                 System.out.println("The Price per unit:");
@@ -37,7 +40,8 @@ public class ServerMenu {
                 Product product = new Product(0, 0, 0, 0, units, price, nameProduct, expirationdate);
                 product.addProduct();
             }
-            else if(choice == 2){
+            else if(choice == 2)
+            {
                 Server server = new Server();
                 List <Product> list = null;
                 try{
@@ -48,7 +52,8 @@ public class ServerMenu {
                 }
                 ListAllproducts(list);
             }
-            else if(choice == 3){
+            else if(choice == 3)
+            {
 
             }
             
@@ -56,7 +61,8 @@ public class ServerMenu {
     }
     // Receber os dados do novo produto e gravar no arquivo as respectivas informações
     
-    public void ListAllproducts(List <Product> list){
+    public void ListAllproducts(List <Product> list)
+    {
     
     
     }

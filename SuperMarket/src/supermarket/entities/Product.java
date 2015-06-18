@@ -46,7 +46,8 @@ public class Product
     }
     
     
-    public void addProduct(){
+    public void addProduct()
+    {
         
         try{
             File fp = new File(PRODUCTS_FILE);
