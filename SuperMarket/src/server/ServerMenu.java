@@ -19,7 +19,7 @@ public class ServerMenu {
     
     public void showMenu(){
         
-        int choice = 0;
+        int choice;
         String nameProduct;
         String expirationdate;
         int units;
@@ -31,11 +31,19 @@ public class ServerMenu {
         Server server = new Server();
         List <Product> list = new ArrayList<>();
         
+        try{
+            
+            
+        }
+        catch{
+            
+        }
         do{
-                System.out.println("\n1 - Register new products");
-                System.out.println("2 - List all the products");
-                System.out.println("3 - Send a notification to the client");
-                System.out.println("4 - Quit");
+            System.out.println("\n1 - Register new products");
+            System.out.println("2 - List all the products");
+            System.out.println("3 - Send a notification to the client");
+            System.out.println("4 - Quit");
+                
             choice = scanner.nextInt();
             
             if(choice == 1){
@@ -97,7 +105,7 @@ public class ServerMenu {
                 line = buffreader.readLine();
                 
                 String[] desires = line.split(",");
-                
+                // pegar o conteudo em arquivo e guardar na lista
                // desireList.add(new ClientStruct(Integer.parseInt(desires[0]), Integer.parseInt(desires[1]), desires[2]));
             }
         }
