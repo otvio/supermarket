@@ -7,9 +7,9 @@ import supermarket.entities.User;
 class ClientStruct
 {
     protected User user;
-    protected ClientListener communicate;
+    protected CommunicateWithClient communicate;
 
-    public ClientStruct(User user, ClientListener communicate) 
+    public ClientStruct(User user, CommunicateWithClient communicate) 
     {
         this.user = user;
         this.communicate = communicate;

@@ -4,12 +4,12 @@ package client;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class ServerListener implements Runnable
+public class CommunicateWithServer implements Runnable
 {
     private final PrintStream toServer;
     private final Scanner fromServer;
     
-    public ServerListener(PrintStream sendToServer, Scanner receiveFromServer)
+    public CommunicateWithServer(PrintStream sendToServer, Scanner receiveFromServer)
     {
         this.fromServer = receiveFromServer;
         this.toServer = sendToServer;
@@ -26,9 +26,9 @@ public class ServerListener implements Runnable
     }
     
     @Override
-    public void run() 
+    public void run()
     {
-        while(fromServer.hasNextLine())
+        while(fromServer.hasNextLine())  // loop para ficar recebendo do servidor
         {
             String message = fromServer.nextLine();
             System.out.println(message);

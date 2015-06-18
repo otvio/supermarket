@@ -4,13 +4,13 @@ package server;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-public class ClientListener implements Runnable
+public class CommunicateWithClient implements Runnable
 {
     private final PrintStream toClient;
     private final Scanner fromClient;
     private String nameClient;
 
-    public ClientListener(PrintStream sendToClient, Scanner receiveFromClient) 
+    public CommunicateWithClient(PrintStream sendToClient, Scanner receiveFromClient) 
     {
         this.toClient = sendToClient;
         this.fromClient = receiveFromClient;
@@ -39,7 +39,7 @@ public class ClientListener implements Runnable
     @Override
     public void run()
     {
-        while(fromClient.hasNextLine())
+        while(fromClient.hasNextLine()) // loop para ficar recebendo do cliente
         {
             String message = fromClient.nextLine();
             System.out.println(message);

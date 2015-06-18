@@ -83,7 +83,7 @@ class ClientConnection implements Runnable
         PrintStream sendToClient = new PrintStream(socketUser.getOutputStream());
 
         // criando o listener para o cliente
-        ClientListener cl = new ClientListener(sendToClient, receiveFromClient);
+        CommunicateWithClient cl = new CommunicateWithClient(sendToClient, receiveFromClient);
         
         // obtendo o usuário no sistema
         User user = askUser(cl);
@@ -102,7 +102,7 @@ class ClientConnection implements Runnable
         }
     }
     
-    public User askUser(ClientListener cl)
+    public User askUser(CommunicateWithClient cl)
     {
         int codeUser;                               // Variável para o código do usuário
         String name, address;                       // Strings para os dados pessoais do usuário
