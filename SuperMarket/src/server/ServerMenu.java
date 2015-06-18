@@ -38,18 +38,21 @@ public class ServerMenu {
                 
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
+                
                 System.out.println("The Price per unit:");
                 price = scanner.nextDouble();
+                
                 System.out.println("The name of the product:");
                 nameProduct = scannerstring.nextLine();
+                
                 System.out.println("The expiration date:");
                 expirationdate = scannerstring.nextLine();
-                System.out.println(expirationdate);
                 
                 /*
                 public Product(int codProduct, int codSupplier, int codCategory, 
                 int stockUnits, int orderedUnits, double unitPrice, 
                 String nameProduct, String validity) /*/
+                
                 
                 Product product = new Product(/*fazer funçoes para pegar os codigo*/0, 0, 0, units, units, price, nameProduct, expirationdate);
                 
@@ -57,7 +60,6 @@ public class ServerMenu {
             }
             
             else if(choice == 2){
-
                 try{
                     list = server.BringList();
                 }
@@ -72,9 +74,11 @@ public class ServerMenu {
                     System.out.println(p.getNameProduct() + " - " + p.getUnitPrice() + " - " + p.getStockUnits());
                 }
             }
+            
             else if(choice == 3){
                    //Send notification to the client
             }
+            
             
         }while(choice != 4);
     }
