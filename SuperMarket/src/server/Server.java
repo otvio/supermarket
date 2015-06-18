@@ -35,8 +35,7 @@ public class Server
     public static void main (String[] args)
     {
         scanner = new Scanner(System.in);
-      
-        
+
         try
         {
             createServer();
@@ -67,30 +66,33 @@ public class Server
         
         servermenu.showMenu();
     }
-    public List<Product> BringList() throws IOException{
+    public List<Product> BringList(){
         
         List <Product> list = new ArrayList<> ();
         String line;
-        BufferedReader buffreader = null;
+        BufferedReader buffreader;
         
         try{
+            
             buffreader = new BufferedReader(new FileReader(PRODUCTS_FILE));
+            
+            while(buffreader.ready()){
+                
+                line = buffreader.readLine();
+            
+                String[] products = line.split(",");
+                
+                list.add(new Product(Integer.parseInt(products[0]), Integer.parseInt(products[1]), Integer.parseInt(products[2]), 
+                    Integer.parseInt(products[3]), Integer.parseInt(products[4]), Double.parseDouble(products[5]), products[6],
+                    products[7]));
+            }
         }
         
         catch(Exception e){
             System.out.println("Something is wrong :(");
         }
         
-        while(buffreader.ready()){
-            
-            line = buffreader.readLine();
-            
-            String[] products = line.split(",");
-            
-            list.add(new Product(Integer.parseInt(products[0]), Integer.parseInt(products[1]), Integer.parseInt(products[2]), 
-                    Integer.parseInt(products[3]), Integer.parseInt(products[4]), Integer.parseInt(products[5]), products[6],
-                    products[7]));
-        }
+       
         
         return list;
     }

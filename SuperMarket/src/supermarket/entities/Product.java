@@ -7,6 +7,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -15,6 +16,7 @@ import static server.Server.PRODUCTS_FILE;
 
 public class Product 
 {
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
     private int codSupplier;
     private int codCategory;
@@ -77,7 +79,7 @@ public class Product
             pw.print(",");
             pw.print(this.nameProduct);
             pw.print(",");
-            pw.println(this.validityProduct);
+            pw.println(dateFormat.format(this.validityProduct.getTime()));
             
             pw.close();
             fw.close();
