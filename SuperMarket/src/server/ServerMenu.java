@@ -1,7 +1,9 @@
 
 package server;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -12,6 +14,8 @@ import supermarket.entities.Product;
 
 
 public class ServerMenu {
+    
+    public static final String USERS_DESIRE = "desires.csv";
     
     public void showMenu(){
         
@@ -53,7 +57,6 @@ public class ServerMenu {
                 int stockUnits, int orderedUnits, double unitPrice, 
                 String nameProduct, String validity) /*/
                 
-                
                 Product product = new Product(/*fazer funçoes para pegar os codigo*/0, 0, 0, units, units, price, nameProduct, expirationdate);
                 
                 product.addFileProduct();
@@ -74,9 +77,9 @@ public class ServerMenu {
                     System.out.println(p.getNameProduct() + " - " + p.getUnitPrice() + " - " + p.getStockUnits());
                 }
             }
-            
+            // percorrer a lista dada pelo método e procurar todos os caras na lista quando atualizar determinado produto
             else if(choice == 3){
-                   //Send notification to the client
+                //Send notification to the client
             }
             
             
@@ -85,15 +88,29 @@ public class ServerMenu {
     
     public void GetDesireList(){
         List <ClientStruct> desireList = new ArrayList<>();
+        String line;
         
-        
-        
+        try{
+            BufferedReader buffreader = new BufferedReader(new FileReader(USERS_DESIRE));
+            
+            while(buffreader.ready()){
+                line = buffreader.readLine();
+                
+                String[] desires = line.split(",");
+                
+               // desireList.add(new ClientStruct(Integer.parseInt(desires[0]), Integer.parseInt(desires[1]), desires[2]));
+            }
+        }
+        catch(Exception e){
+            System.out.println("\n::: Can't get the desire's list :::");
+        }
     }
+    
     // Receber os dados do novo produto e gravar no arquivo as respectivas informações
     public void createFileDesire(ClientStruct clientStruct){
         
         try{
-            File fp = new File(PRODUCTS_FILE);
+            File fp = new File(USERS_DESIRE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
         
@@ -103,9 +120,7 @@ public class ServerMenu {
             
             pw.print(clientStruct.product.getCodProduct());
             pw.print(",");
-            pw.print(clientStruct.product.getStockUnits());
-            pw.print(",");
-            pw.println(clientStruct.user.getCodUser());
+            pw.println(clientStruct.product.getStockUnits());
         }
         catch(Exception e){
             System.out.println("\n:::Can't bring all the list to the server:::");
