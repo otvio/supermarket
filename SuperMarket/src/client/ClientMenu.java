@@ -16,7 +16,7 @@ public class ClientMenu
     
     List <Category> categoryList = new ArrayList<>();
     List <Product> productList = new ArrayList<>();
-   
+    List <Product> desireList = new ArrayList<>();
         
     public ClientMenu(String nameClient)
     {
@@ -31,8 +31,9 @@ public class ClientMenu
             System.out.println("\n\t:::::    Welcome to the LORMarket, " + nameClient + "    :::::\n");
             System.out.println("1 - Search a product");
             System.out.println("2 - List all the products.");
-            System.out.println("3 - Desire list.");
-            System.out.println("4 - Exit.");
+            System.out.println("3 - Place order.");
+            System.out.println("4 - List desires.");
+            System.out.println("5 - Exit.");
             
             cases = sc.nextLine();
             
@@ -52,8 +53,12 @@ public class ClientMenu
             case "3":
                 desireList();
                 break; 
+                
+            case "4":
+                placeOrder();
+                break; 
         }
-         if (!("4").equals(cases))
+         if (!("5").equals(cases))
             {
                 System.out.println("\nPressione ENTER para continuar...");
                 cases = sc.nextLine();                
@@ -73,6 +78,21 @@ public class ClientMenu
         System.out.println("\n ...::: All products  :::...\n\n");
         for(Product p : productList)
             p.printProduct(categoryList.get(p.getCodCategory()));
+        
+        do
+        {
+            System.out.println("Shop now any product? (Y)-Yes , (N)-No" );
+            cases = sc.nextLine().toUpperCase();
+            
+        }while(!cases.equals("Y") && !cases.equals("N"));
+        
+        if(cases == "Y")
+        {
+            
+        } 
+        else
+            printMenu();
+  
     }
     
     public void desireList()
@@ -80,4 +100,10 @@ public class ClientMenu
         
     
     }
+    public void placeOrder()
+    {
+        
+        
+    }
+   
 }

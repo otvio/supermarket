@@ -1,10 +1,14 @@
 
 package server;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import supermarket.entities.Product;
 
 public class Server 
 {
@@ -31,6 +35,7 @@ public class Server
     public static void main (String[] args)
     {
         scanner = new Scanner(System.in);
+      
         
         try
         {
@@ -46,7 +51,7 @@ public class Server
                                    + "   (N). No\n");
                 beNotified = scanner.nextLine().toUpperCase();
             } while (!beNotified.equals("Y") && !beNotified.equals("N"));
-            
+              
             new Thread(new ClientConnection(serverSocket, clientList, beNotified.equals("Y"))).start();
         }
         catch (Exception e)
@@ -57,5 +62,36 @@ public class Server
         {
             //System.out.println("\n\n:::Thank you for using this program. :::");
         }
+        
+        ServerMenu servermenu = new ServerMenu();
+        
+        servermenu.showMenu();
+    }
+    public List<Product> BringList() throws IOException{
+        
+        List <Product> list = new ArrayList<> ();
+        String line;
+        BufferedReader buffreader = null;
+        
+        try{
+            buffreader = new BufferedReader(new FileReader(PRODUCTS_FILE));
+        }
+        
+        catch(Exception e){
+            System.out.println("Something is wrong :(");
+        }
+        
+        while(buffreader.ready()){
+            
+            line = buffreader.readLine();
+            
+            String[] products = line.split(",");
+            
+            list.add(new Product(Integer.parseInt(products[0]), Integer.parseInt(products[1]), Integer.parseInt(products[2]), 
+                    Integer.parseInt(products[3]), Integer.parseInt(products[4]), Integer.parseInt(products[5]), products[6],
+                    products[7]));
+        }
+        
+        return list;
     }
 }

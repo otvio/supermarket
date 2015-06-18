@@ -1,12 +1,18 @@
 
 package supermarket.entities;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import static server.Server.PRODUCTS_FILE;
 
 public class Product 
 {
+    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
     private int codProduct;
     private int codSupplier;
     private int codCategory;
@@ -37,6 +43,48 @@ public class Product
                 Integer.parseInt(date[2]), 
                 Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0])
         );
+    }
+    
+    
+    public void addProduct(){
+        
+        try{
+            File fp = new File(PRODUCTS_FILE);
+            FileWriter fw = new FileWriter(fp, true);
+            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+            
+            if(fp.exists() == false)
+            { // caso o arquivo nao exista, cria um arquivo
+                fp.createNewFile();
+            }
+            /*
+            public Product(int codProduct, int codSupplier, int codCategory, 
+            int stockUnits, int orderedUnits, double unitPrice, 
+            String nameProduct, String validity) /*/
+            
+            pw.print(this.codProduct);
+            pw.print(",");
+            pw.print(this.codSupplier);
+            pw.print(",");
+            pw.print(this.codCategory);
+            pw.print(",");
+            pw.print(this.stockUnits);
+            pw.print(",");
+            pw.print(this.orderedUnits);
+            pw.print(",");
+            pw.print(this.unitPrice);
+            pw.print(",");
+            pw.print(this.nameProduct);
+            pw.print(",");
+            pw.println(dateFormat.format(this.validityProduct.getTime()));
+            
+            pw.close();
+            fw.close();
+        }
+        
+        catch(Exception e){
+            System.out.println("Can't store in the file :(");
+        }
     }
     
     
@@ -119,6 +167,7 @@ public class Product
         System.out.println("||Validity: " + this.validityProduct);
         System.out.println("||Category: " + c.getNameCategory());
         System.out.println("||Units: " + this.getStockUnits());            
-        System.out.println("\\\\--------------------------------------"); 
+        System.out.println("\\\\--------------------------------------\n\n"); 
     }
 }
+  
