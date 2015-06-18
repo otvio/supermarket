@@ -7,16 +7,20 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import static server.Server.DESIRE_FILE;
 import static server.Server.PRODUCTS_FILE;
+import static server.Server.USERS_FILE;
 import supermarket.entities.Product;
+import supermarket.entities.User;
 
 
 public class ServerMenu {
-    
-    public static final String USERS_DESIRE = "desires.csv";
-    
+
     public void showMenu(){
         
         int choice;
@@ -29,15 +33,10 @@ public class ServerMenu {
         Scanner scannerstring = new Scanner(System.in);
         
         Server server = new Server();
-        List <Product> list = new ArrayList<>();
+        List <Product> listProducts = new ArrayList<>();
+        listProducts = server.BringList();
+        //List <User> listUser = new ArrayList<>();
         
-        try{
-            
-            
-        }
-        catch{
-            
-        }
         do{
             System.out.println("\n1 - Register new products");
             System.out.println("2 - List all the products");
@@ -47,6 +46,14 @@ public class ServerMenu {
             choice = scanner.nextInt();
             
             if(choice == 1){
+                
+                Collections.sort(listProducts, new Comparator<Product>(){
+
+                    @Override
+                    public int compare(Product o1, Product o2) {
+                        return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
+                    }
+                });
                 
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
@@ -65,14 +72,14 @@ public class ServerMenu {
                 int stockUnits, int orderedUnits, double unitPrice, 
                 String nameProduct, String validity) /*/
                 
-                Product product = new Product(/*fazer funçoes para pegar os codigo*/0, 0, 0, units, units, price, nameProduct, expirationdate);
+                Product product = new Product(/*fazer funçoes para pegar os codigo*/(listProducts.get(listProducts.size() - 1).getCodProduct() + 1), 0, 0, units, units, price, nameProduct, expirationdate);
                 
                 product.addFileProduct();
             }
             
             else if(choice == 2){
                 try{
-                    list = server.BringList();
+                    listProducts = server.BringList();
                 }
                 
                 catch(Exception e){
@@ -81,7 +88,7 @@ public class ServerMenu {
                 
                 System.out.println("\n ::: Show all the Products :: \n");
                 
-                for(Product p : list){
+                for(Product p : listProducts){
                     System.out.println(p.getNameProduct() + " - " + p.getUnitPrice() + " - " + p.getStockUnits());
                 }
             }
@@ -94,31 +101,33 @@ public class ServerMenu {
         }while(choice != 4);
     }
     
-    public void GetDesireList(){
+    public List <ClientStruct> getDesireList(int codeProduct){
         List <ClientStruct> desireList = new ArrayList<>();
         String line;
         
         try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(USERS_DESIRE));
+            BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));
             
             while(buffreader.ready()){
                 line = buffreader.readLine();
                 
                 String[] desires = line.split(",");
                 // pegar o conteudo em arquivo e guardar na lista
-               // desireList.add(new ClientStruct(Integer.parseInt(desires[0]), Integer.parseInt(desires[1]), desires[2]));
+                desireList.add();
             }
         }
         catch(Exception e){
             System.out.println("\n::: Can't get the desire's list :::");
         }
+        
+        return desireList;
     }
     
     // Receber os dados do novo produto e gravar no arquivo as respectivas informações
     public void createFileDesire(ClientStruct clientStruct){
         
         try{
-            File fp = new File(USERS_DESIRE);
+            File fp = new File(DESIRE_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
         
@@ -126,12 +135,32 @@ public class ServerMenu {
                 fp.createNewFile();
             }
             
-            pw.print(clientStruct.product.getCodProduct());
-            pw.print(",");
-            pw.println(clientStruct.product.getStockUnits());
         }
         catch(Exception e){
             System.out.println("\n:::Can't bring all the list to the server:::");
         }
+    }
+    
+    public List<User> getAllTheUser(){
+        
+        List<User> listUsers = new ArrayList<>();
+        String line;
+        
+        try{
+            BufferedReader buffreader = new BufferedReader(new FileReader(USERS_FILE));
+            
+            while(buffreader.ready()){
+                line = buffreader.readLine();
+                
+                String[] desires = line.split(",");
+                // pegar o conteudo em arquivo e guardar na lista
+                listUsers.add(new User(Integer.parseInt(desires[0]), desires[1], desires[2],  desires[3],  desires[4], desires[5],  desires[6]));
+            }
+        }
+        catch(Exception e){
+            System.out.println("\n::: Can't get the desire's list :::");
+        }
+
+        return listUsers;
     }
 }

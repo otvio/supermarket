@@ -15,6 +15,7 @@ public class Server
     // defines para os nomes dos arquivos
     public static final String USERS_FILE = "users.csv";
     public static final String SALES_FILE = "sales.csv";
+    public static final String DESIRE_FILE = "desires.csv";
     public static final String PRODUCTS_FILE = "products.csv";
     public static final String SUPPLIERS_FILE = "suppliers.csv";
     public static final String CATEGORIES_FILE = "categories.csv";

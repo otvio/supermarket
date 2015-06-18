@@ -9,7 +9,6 @@ import supermarket.entities.User;
 class ClientStruct
 {
     protected User user;
-    protected Product product;
     protected ClientListener communicate;
     protected List<Integer> desires;
 

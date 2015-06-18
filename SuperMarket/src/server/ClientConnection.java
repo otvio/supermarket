@@ -9,10 +9,9 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
-
 import supermarket.entities.User;
 import static server.Server.USERS_FILE;
-
+import static server.Server.DESIRE_FILE;
 
 // usada para ficar recebendo as conexões dos clientes
 class ClientConnection implements Runnable 
@@ -98,7 +97,8 @@ class ClientConnection implements Runnable
         else
         {
             new Thread(cl).start();
-            return (new ClientStruct(user, cl));
+            List <Integer> listDesires = getUserDesires(user.getCodUser());
+            return (new ClientStruct(user, cl, listDesires));
         }
     }
     
@@ -235,5 +235,26 @@ class ClientConnection implements Runnable
         }
 
         return (userlist);
+    }
+    
+    public List<Integer> getUserDesires(int codeUser) throws Exception{
+        
+        List<Integer> desireList = new ArrayList<>();
+        String line;
+        BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));
+        
+        while(buffreader.ready()){
+            
+            line = buffreader.readLine();
+            
+            String[] desire = line.split(",");
+            
+            if(Integer.parseInt(desire[0]) == codeUser){
+                
+                desireList.add(Integer.parseInt(desire[1]));
+            }
+        }
+        
+        return desireList;
     }
 }
