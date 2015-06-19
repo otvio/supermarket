@@ -1,27 +1,10 @@
 
 package server;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Scanner;
-import static server.Server.CATEGORIES_FILE;
-import static server.Server.DESIRE_FILE;
-import static server.Server.PRODUCTS_FILE;
-import static server.Server.SUPPLIERS_FILE;
-import static server.Server.USERS_FILE;
-import supermarket.entities.Category;
-import supermarket.entities.Product;
-import supermarket.entities.Supplier;
-import supermarket.entities.User;
-
+import java.io.*;
+import java.util.*;
+import static server.Server.*;
+import supermarket.entities.*;
 
 public class ServerMenu {
 
@@ -35,7 +18,10 @@ public class ServerMenu {
         String nameCategory;
         String descriptionCategory;
         int units;
-        int code;
+        int numberOfUptades;
+        int code = -1;
+        int codeCategory;
+        int codeSupplier;
         int choice;
         double price;
         
@@ -50,6 +36,7 @@ public class ServerMenu {
         listSupplier = getAllSupplier();
         
         List<Category> listCategory = new ArrayList<>();
+        listCategory = getAllCategory();
         //List <User> listUser = new ArrayList<>();
         
         do{
@@ -58,18 +45,12 @@ public class ServerMenu {
             System.out.println("3 - Send a notification to the client");
             System.out.println("4 - Registering new Supplier");
             System.out.println("5 - Add a new category");
-            System.out.println("6 - Quit");
+            System.out.println("6 - Uptade product in the stock");
+            System.out.println("7 - Quit");
                 
             choice = scanner.nextInt();
             
             if(choice == 1){
-                Collections.sort(listProducts, new Comparator<Product>(){
-
-                    @Override
-                    public int compare(Product o1, Product o2) {
-                        return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
-                    }
-                });
                 
                 code = (!listProducts.isEmpty()) ? (listProducts.get(listProducts.size() - 1).getCodProduct()+ 1) : 0;  // Código que será adicionado para o usuário
                 
@@ -85,14 +66,36 @@ public class ServerMenu {
                 System.out.println("The expiration date:");
                 expirationdate = scannerstring.nextLine();
                 
-                /*
-                public Product(int codProduct, int codSupplier, int codCategory, 
-                int stockUnits, int orderedUnits, double unitPrice, 
-                String nameProduct, String validity) /*/
+                System.out.println("The name of the supplier:");
+                nameSupplier = scannerstring.nextLine();
                 
-                Product product = new Product(code, 0, 0, units, units, price, nameProduct, expirationdate);
+                System.out.println("The name of the category:");
+                nameCategory = scannerstring.nextLine();
+                    
+                codeSupplier = getSupplier(listSupplier, nameSupplier);
+                codeCategory = getCategory(listCategory, nameCategory);
                 
-                product.addFileProduct();
+                if(codeCategory != -1 && codeSupplier != -1){
+                
+                    Product product = new Product(code, codeSupplier, codeCategory, units, units, price, nameProduct, expirationdate);
+                
+                    product.addFileProduct();
+                
+                    Collections.sort(listProducts, new Comparator<Product>(){
+
+                        @Override
+                        public int compare(Product o1, Product o2) {
+                            return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
+                        }
+                    });
+                }
+                
+                if(codeCategory == -1){
+                    System.out.println("\n:::The name of the category is invalid, please try another one:::");
+                }
+                if(codeSupplier == -1){
+                    System.out.println("\n:::The name of the supplier is invalid, please try another one:::");
+                }
             }
             
             else if(choice == 2){
@@ -118,14 +121,6 @@ public class ServerMenu {
             
             else if(choice == 4){
                 
-                Collections.sort(listSupplier, new Comparator<Supplier>(){
-
-                    @Override
-                    public int compare(Supplier o1, Supplier o2) {
-                        return o1.getCodSupplier() < o2.getCodSupplier() ? -1 : 1;
-                    }
-                });
-                
                 code = (!listSupplier.isEmpty()) ? (listSupplier.get(listSupplier.size() - 1).getCodSupplier()+ 1) : 0;  // Código que será adicionado para o usuário
                 
                 System.out.println("\nEnter with the name of the supplier:");
@@ -139,16 +134,18 @@ public class ServerMenu {
                 
                 listSupplier.add(new Supplier(code ,nameSupplier, nameContact, contacting));
                 listSupplier.get(listSupplier.size() - 1).addFileSupplier();
+                
+                Collections.sort(listSupplier, new Comparator<Supplier>(){
+
+                    @Override
+                    public int compare(Supplier o1, Supplier o2) {
+                        return o1.getCodSupplier() < o2.getCodSupplier() ? -1 : 1;
+                    }
+                });
+                
             }
             
             else if(choice == 5){
-                Collections.sort(listCategory, new Comparator<Category>(){
-
-                    @Override
-                    public int compare(Category o1, Category o2) {
-                        return o1.getCodCategory() < o2.getCodCategory() ? -1 : 1;
-                    }
-                });
                 
                 code = (!listCategory.isEmpty()) ? (listCategory.get(listCategory.size() - 1).getCodCategory()+ 1) : 0;  // Código que será adicionado para o usuário
            
@@ -158,10 +155,39 @@ public class ServerMenu {
                 descriptionCategory = scannerstring.nextLine();
                 
                 listCategory.add(new Category(code, nameCategory, descriptionCategory));
-                listCategory.get(listSupplier.size() - 1).addFileCategory();
+                listCategory.get(listCategory.size() - 1).addFileCategory();
+                
+                Collections.sort(listCategory, new Comparator<Category>(){
+
+                    @Override
+                    public int compare(Category o1, Category o2) {
+                        return o1.getCodCategory() < o2.getCodCategory() ? -1 : 1;
+                    }
+                });
             }
             
-        }while(choice != 6);
+            else if(choice == 6){
+                System.out.println("\n::Enter with the number of uptades::");
+                numberOfUptades = scanner.nextInt();
+                
+                for (int i = 0; i < numberOfUptades; i++) {
+                    
+                    System.out.println("\n::: Enter the name of the product:::");
+                    nameProduct = scannerstring.nextLine();
+                    System.out.println("\n::: Enter the number of the products:::");
+                    units = scanner.nextInt();
+                    code = -1;
+                    
+                    for (Product product : listProducts) {
+                        if(product.getNameProduct().equals(nameProduct)){
+                            code = product.getCodProduct();
+                        }
+                    }
+                    if(code != -1)
+                        uptadeStock(code, units, listProducts);
+                }
+            }
+        }while(choice != 7);
         
     }
     
@@ -206,7 +232,7 @@ public class ServerMenu {
         }
     }
     
-    public List<User> getAllTheUser(){
+    public List<s> getAllTheUser(){
         
         List<User> listUsers = new ArrayList<>();
         String line;
@@ -273,5 +299,39 @@ public class ServerMenu {
         }
 
         return listCategory;     
+    }
+    
+    public void uptadeStock(int codeProduct, int units, List<Product> listProducts){
+        
+        for (Product product : listProducts) {
+            if(product.getCodProduct() == codeProduct){
+                product.setStockUnits(units + product.getStockUnits());
+                
+                if(product.getStockUnits() > product.getOrderedUnits()){
+                    product.setOrderedUnits(product.getStockUnits());
+                }
+            }
+        }
+    }
+    
+    public int getSupplier(List<Supplier> listSupplier, String nameSupplier){
+        int code = -1;
+        for (Supplier supplier : listSupplier) {
+            if(supplier.getNameSupplier().equals(nameSupplier)){
+                code = supplier.getCodSupplier();
+            }
+        }
+        return code;
+    }
+    
+    public int getCategory(List<Category> listCategory, String nameCategory){
+        int code = -1;
+        
+        for (Category category : listCategory) {
+            if(category.getNameCategory().equals(nameCategory)){
+                code = category.getCodCategory();
+            }
+        }
+        return code;
     }
 }

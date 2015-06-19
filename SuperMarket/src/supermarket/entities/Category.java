@@ -4,6 +4,7 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import static server.Server.CATEGORIES_FILE;
 import static server.Server.PRODUCTS_FILE;
 
 
@@ -23,7 +24,7 @@ public class Category
     
     public void addFileCategory(){
         try{
-            File fp = new File(PRODUCTS_FILE);
+            File fp = new File(CATEGORIES_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
             
