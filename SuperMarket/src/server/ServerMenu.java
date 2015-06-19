@@ -162,13 +162,6 @@ public class ServerMenu
                 catch(Exception e){
                     System.out.println("Can't list all the products!");
                 }
-                
-                
-                
-                
-                
-                
-                
             }
             else if(choice == 4){
                 
