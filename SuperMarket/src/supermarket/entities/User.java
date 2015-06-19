@@ -1,12 +1,16 @@
 
 package supermarket.entities;
 
+import email.SendMail;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Observable;
+import java.util.Observer;
+import static server.Server.USERS_FILE;
 
 
-public class User 
+public class User implements Observer
 {
     private int codUser;
     private String name;   
@@ -101,7 +105,7 @@ public class User
     {
         try
         {
-            File fp = new File("users.csv");
+            File fp = new File(USERS_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw);    // cria um PrintWriter que irá escrever no arquivo
         
@@ -141,6 +145,14 @@ public class User
     {
         return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
     }
-    
-    
+
+    @Override
+    public void update(Observable o, Object arg) 
+    {
+        if (o.hasChanged())
+        {
+            SendMail sm = new SendMail();
+            sm.sendMail(this.getEmail(), "Product Available!!", "The product {" + (Product(o)).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from yours desire list.");
+        }
+    }
 }

@@ -1,11 +1,14 @@
 
 package supermarket.entities;
 
-import java.util.Calendar;
-import java.util.GregorianCalendar;
+import java.io.*;
+import java.util.*;
+import java.text.SimpleDateFormat;
+import static server.Server.PRODUCTS_FILE;
 
-public class Product 
+public class Product extends Observable
 {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
     private int codSupplier;
     private int codCategory;
@@ -14,6 +17,10 @@ public class Product
     private double unitPrice;
     private String nameProduct;
     private Calendar validityProduct;
+    
+    // lista para implementar o design pattern: Observer
+    List<Observer> observers = new ArrayList<>();
+    boolean isChanged = false;
 
     
     public Product(int codProduct, int codSupplier, int codCategory, 
@@ -38,6 +45,49 @@ public class Product
         );
     }
     
+	
+	public void addFileProduct()
+	{
+        try
+		{
+            File fp = new File(PRODUCTS_FILE);
+            FileWriter fw = new FileWriter(fp, true);
+            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+            
+            if(fp.exists() == false)
+            { // caso o arquivo nao exista, cria um arquivo
+                fp.createNewFile();
+            }
+			
+            /*
+            public Product(int codProduct, int codSupplier, int codCategory, 
+            int stockUnits, int orderedUnits, double unitPrice, 
+            String nameProduct, String validity) /*/
+            
+            pw.print(this.codProduct);
+            pw.print(",");
+            pw.print(this.codSupplier);
+            pw.print(",");
+            pw.print(this.codCategory);
+            pw.print(",");
+            pw.print(this.stockUnits);
+            pw.print(",");
+            pw.print(this.orderedUnits);
+            pw.print(",");
+            pw.print(this.unitPrice);
+            pw.print(",");
+            pw.print(this.nameProduct);
+            pw.print(",");
+            pw.println(dateFormat.format(this.validityProduct.getTime()));
+            
+            pw.close();
+            fw.close();
+        }
+        catch(Exception e)
+		{
+            System.out.println("Can't store in the file :(");
+        }
+    }
     
     public int getCodCategory() 
     {
@@ -108,4 +158,42 @@ public class Product
     {
         this.orderedUnits = orderedUnits;
     }
+	
+    public void printProduct(Category c)
+    {
+        System.out.println("//--------------------------------------"); 
+        System.out.println("||Product Code: " + (this.getCodProduct()));
+        System.out.println("||Product name : " + this.getNameProduct());
+        System.out.println("||Price: " + this.getUnitPrice());
+        System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
+        System.out.println("||Category: " + c.getNameCategory());
+        System.out.println("||Units: " + this.getStockUnits());            
+        System.out.println("\\\\--------------------------------------\n\n"); 
+    }
+    
+    @Override
+    public void addObserver(Observer o)
+    {
+        observers.add(o);
+    }
+    
+    @Override
+    public void clearChanged()
+    {
+        isChanged = false;
+    }
+    
+    @Override
+    public int countObservers()
+    {
+        return observers.size();
+    }
+    
+    @Override
+    public void deleteObservers()
+    {
+        observers.clear();
+    }
+    
+    //hasChanged()
 }
