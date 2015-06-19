@@ -16,7 +16,7 @@ import static server.Server.PRODUCTS_FILE;
 
 public class Product 
 {
-	private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
     private int codSupplier;
     private int codCategory;
@@ -163,13 +163,13 @@ public class Product
         this.orderedUnits = orderedUnits;
     }
 	
-	public void printProduct(Category c)
+    public void printProduct(Category c)
     {
         System.out.println("//--------------------------------------"); 
         System.out.println("||Product Code: " + (this.getCodProduct()));
         System.out.println("||Product name : " + this.getNameProduct());
         System.out.println("||Price: " + this.getUnitPrice());
-        System.out.println("||Validity: " + this.validityProduct);
+        System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
         System.out.println("||Category: " + c.getNameCategory());
         System.out.println("||Units: " + this.getStockUnits());            
         System.out.println("\\\\--------------------------------------\n\n"); 

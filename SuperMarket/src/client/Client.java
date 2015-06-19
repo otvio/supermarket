@@ -13,18 +13,32 @@ public class Client
     
     public void connect() throws Exception
     {
-		// tentando se conectar ao servidor
-		socket = new Socket("localhost", 12345);
-		System.out.println("::: Client Connected! :)");
-		System.out.println("::: Awaiting the server... ");
-		
-		// criando a thread de comunicação com o servidor
-		communicate = new CommunicateWithServer(
-				new PrintStream(socket.getOutputStream()), 
-				new Scanner(socket.getInputStream()));
-		
-		// iniciando a thread de comunicação com o servidor
-		new Thread(communicate).start();
+        // tentando se conectar ao servidor
+        socket = new Socket("localhost", 12345);
+        System.out.println("::: Client Connected! :)");
+        System.out.println("::: Awaiting the server... ");
+
+        // criando a thread de comunicação com o servidor
+        communicate = new CommunicateWithServer(
+                        new PrintStream(socket.getOutputStream()), 
+                        new Scanner(socket.getInputStream()));
+
+        // iniciando a thread de comunicação com o servidor
+        new Thread(communicate).start();
+        new Thread(new ClientSendThread()).start();
+    }
+    
+    class ClientSendThread implements Runnable
+    {
+        @Override
+        public void run()
+        {
+            while(scanner.hasNextLine())
+            {
+                String command = scanner.nextLine();
+                communicate.sendToServer(command);
+            }
+        }
     }
     
     public static void main (String[] args)

@@ -1,6 +1,7 @@
 
 package client;
 
+import static connection.Connection.*;
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -31,7 +32,25 @@ public class CommunicateWithServer implements Runnable
         while(fromServer.hasNextLine())  // loop para ficar recebendo do servidor
         {
             String message = fromServer.nextLine();
+            String aux;
+            
             System.out.println(message);
+            
+            switch (message) 
+            {
+//                case LOGIN_ATTEMPT:
+//                    aux = "";
+//                    while (!aux.equals(LOGIN_ATTEMPT))
+//                    {
+//                        
+//                    }
+//                    break;
+                default:
+                    //System.out.println(message);
+            }
+            
+            
+            
         }
     }
 }

@@ -1,6 +1,7 @@
 
 package server;
 
+import static connection.Connection.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintStream;
@@ -201,7 +202,7 @@ class ClientConnection implements Runnable
                 }
             }
         }
-
+        
         return(user);
     }
     
@@ -238,14 +239,14 @@ class ClientConnection implements Runnable
         return (userlist);
     }
 	
-	public List<Integer> getUserDesires(int codeUser) throws Exception
-	{
-		String line;
+    public List<Integer> getUserDesires(int codeUser) throws Exception
+    {
+	String line;
         List<Integer> desireList = new ArrayList<>();
         BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));
         
         while(buffreader.ready())
-		{
+	{
             line = buffreader.readLine();
             
             String[] desire = line.split(",");
