@@ -1,6 +1,7 @@
 
 package server;
 
+import email.SendMail;
 import java.io.*;
 import java.util.*;
 import static server.Server.*;
@@ -18,7 +19,7 @@ public class ServerMenu {
         this.clientList = clientList;
     }
     
-    public void showMenu()
+    public void showMenu() throws Exception
     {
         String nameProduct;
         String expirationdate;
@@ -38,7 +39,7 @@ public class ServerMenu {
         Scanner scanner = new Scanner(System.in);
         Scanner scannerstring = new Scanner(System.in);
         
-        Server server = new Server();
+        Server server = Server.getInstance();
         List <Product> listProducts = new ArrayList<>();
         listProducts = server.BringList();
         
@@ -152,7 +153,8 @@ public class ServerMenu {
                         }
                     });
                     
-                    for(Product p : listProducts){
+                    for(Product p : listProducts)
+                    {
                         System.out.println("Product " + p.getCodProduct() + ". ");
                         p.printProduct(categoryList.get(p.getCodCategory()));
                     }
@@ -169,10 +171,19 @@ public class ServerMenu {
                     
                     if (now > bef) 
                     {
-                        listProducts.get(codProduct).setChanged();
-                        listProducts.get(codProduct).notifyObservers();
-                        listProducts.get(codProduct).deleteObservers();
-                        System.out.println("E-mail sent to users. The product was removed from their desire list.\n");
+                        for (User u : userList) 
+                        {
+                            for (Integer i : desireList.get(u)) 
+                            {
+                                if (i == codProduct)
+                                {
+                                    new SendMail().sendMail(u.getEmail(), "Product Available!!!", "The product {" + listProducts.get(codProduct).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from your desire list.");
+                                    System.out.println("E-mail sent to user {" + u.getName() + "}. The product was removed from his/her desire list.\n");
+                                    desireList.get(u).remove(i);
+                                    break;
+                                }
+                            }
+                        }
                     }
                 }
                 
@@ -250,9 +261,10 @@ public class ServerMenu {
                 }
             }
         }while(choice != 7);
-        
     }
-    public Map<User, List<Integer>> getAllDesireList(List<User> userList){
+    
+    public Map<User, List<Integer>> getAllDesireList(List<User> userList)
+    {
         Map<User, List<Integer>> desirelist = new HashMap<>();
         String line;
         

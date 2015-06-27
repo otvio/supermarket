@@ -11,6 +11,9 @@ import supermarket.entities.Product;
 
 public class Server 
 {
+    // Singleton pattern:
+    private static Server server = null;
+    
     // defines para os nomes dos arquivos
     public static final String USERS_FILE = "users.csv";
     public static final String SALES_FILE = "sales.csv";
@@ -23,25 +26,31 @@ public class Server
     private static String beNotified;
     private static ServerSocket serverSocket;
     private static List<ClientStruct> clientList;
+    private static ClientConnection clientConnection = null;
     
     ////////////////////////////////////////////////////////////////////////////
     
     // tenta criar o server no construtor
-    public static void createServer() throws Exception 
+    private Server() throws Exception 
     {
         Server.serverSocket = new ServerSocket(12345);
+        Server.scanner = new Scanner(System.in);
+        Server.clientList = new ArrayList<>();
+    }
+    
+    public static synchronized Server getInstance() throws Exception
+    {
+        if (Server.server == null)
+            Server.server = new Server();
+        
+        return Server.server;
     }
     
     public static void main (String[] args)
     {
-        scanner = new Scanner(System.in);
-      
-        
         try
         {
-            createServer();
-            clientList = new ArrayList<>();
-            
+            getInstance();
             System.out.println("::: Server Connected! :) :::");
             
             do
@@ -49,10 +58,17 @@ public class Server
                 System.out.println("\nDo you want to be notified when a new user enter?\n"
                                    + "   (Y). Yes\n"
                                    + "   (N). No\n");
-                beNotified = scanner.nextLine().toUpperCase();
-            } while (!beNotified.equals("Y") && !beNotified.equals("N"));
-              
-            new Thread(new ClientConnection(serverSocket, clientList, beNotified.equals("Y"))).start();
+                Server.beNotified = scanner.nextLine().toUpperCase();
+            } while (!Server.beNotified.equals("Y") && !Server.beNotified.equals("N"));
+            
+            if (clientConnection == null)
+            {
+                clientConnection = ClientConnection.getInstance(serverSocket, clientList, Server.beNotified.equals("Y"));
+                new Thread(clientConnection).start();
+            }
+            
+            ServerMenu servermenu = new ServerMenu(clientList);
+            servermenu.showMenu();
         }
         catch (Exception e)
         {
@@ -62,23 +78,20 @@ public class Server
         {
            //System.out.println("\n\n:::Thank you for using this program. :::");
         }
-        
-        ServerMenu servermenu = new ServerMenu(clientList);
-        servermenu.showMenu();
     }
 	
-    public List<Product> BringList(){
-        
-        List <Product> list = new ArrayList<> ();
+    public List<Product> BringList()
+    {
+        List<Product> list = new ArrayList<>();
         String line;
         BufferedReader buffreader;
         
-        try{
-            
+        try
+        {
             buffreader = new BufferedReader(new FileReader(PRODUCTS_FILE));
             
-            while(buffreader.ready()){
-                
+            while(buffreader.ready())
+            {
                 line = buffreader.readLine();
             
                 String[] products = line.split(",");
@@ -88,8 +101,8 @@ public class Server
                     products[7]));
             }
         }
-        
-        catch(Exception e){
+        catch(Exception e)
+        {
             System.out.println("Something is wrong :(");
         }
         

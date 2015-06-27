@@ -6,7 +6,7 @@ import java.util.*;
 import java.text.SimpleDateFormat;
 import static server.Server.PRODUCTS_FILE;
 
-public class Product extends Observable
+public class Product
 {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
@@ -17,11 +17,6 @@ public class Product extends Observable
     private double unitPrice;
     private String nameProduct;
     private Calendar validityProduct;
-    
-    // lista para implementar o design pattern: Observer
-    List<Observer> observers = new ArrayList<>();
-    boolean isChanged = false;
-
     
     public Product(int codProduct, int codSupplier, int codCategory, 
             int stockUnits, int orderedUnits, double unitPrice, 
@@ -170,30 +165,4 @@ public class Product extends Observable
         System.out.println("||Units: " + this.getStockUnits());            
         System.out.println("\\\\--------------------------------------\n\n"); 
     }
-    
-    @Override
-    public void addObserver(Observer o)
-    {
-        observers.add(o);
-    }
-    
-    @Override
-    public void clearChanged()
-    {
-        isChanged = false;
-    }
-    
-    @Override
-    public int countObservers()
-    {
-        return observers.size();
-    }
-    
-    @Override
-    public void deleteObservers()
-    {
-        observers.clear();
-    }
-    
-    //hasChanged()
 }

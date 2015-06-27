@@ -1,7 +1,6 @@
 
 package server;
 
-import static connection.Connection.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.PrintStream;
@@ -14,31 +13,41 @@ import supermarket.entities.User;
 import static server.Server.USERS_FILE;
 import static server.Server.DESIRE_FILE;
 
-
 // usada para ficar recebendo as conexões dos clientes
 class ClientConnection implements Runnable 
 {
-    boolean beNotified;
-    ServerSocket serverSocket;
+    //Singleton pattern:
+    private static ClientConnection clientConnection = null;
     
-    List<User> userList;
-    List<ClientStruct> clientList;
+    private static boolean beNotified;
+    private static ServerSocket serverSocket;
+    
+    private static List<User> userList;
+    private static List<ClientStruct> clientList;
     
     
-    public ClientConnection(ServerSocket serverSocket, List<ClientStruct> clientList, 
+    private ClientConnection(ServerSocket serverSocket, List<ClientStruct> clientList, 
             boolean beNotified) throws Exception 
     {
         BufferedReader buffReader;
 
-        this.serverSocket = serverSocket;
-        this.clientList = clientList;
-        this.beNotified = beNotified;
+        ClientConnection.serverSocket = serverSocket;
+        ClientConnection.clientList = clientList;
+        ClientConnection.beNotified = beNotified;
         
         buffReader = new BufferedReader(new FileReader(USERS_FILE));   // Leitura dos usuários no arquivo
         userList = getUsersList(buffReader);                           // Armazena os usuários na lista de usuários
         buffReader.close();
     }
     
+    public static synchronized ClientConnection getInstance(ServerSocket serverSocket, List<ClientStruct> clientList, 
+            boolean beNotified) throws Exception
+    {
+        if (ClientConnection.clientConnection == null)
+            ClientConnection.clientConnection = new ClientConnection(serverSocket, clientList, beNotified);
+        
+        return ClientConnection.clientConnection;
+    }
     
     @Override
     public void run()

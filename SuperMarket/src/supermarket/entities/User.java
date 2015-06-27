@@ -1,16 +1,12 @@
 
 package supermarket.entities;
 
-import email.SendMail;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
-import java.util.Observable;
-import java.util.Observer;
 import static server.Server.USERS_FILE;
 
-
-public class User implements Observer
+public class User
 {
     private int codUser;
     private String name;   
@@ -144,15 +140,5 @@ public class User implements Observer
     public String toString() 
     {
         return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
-    }
-
-    @Override
-    public void update(Observable o, Object arg) 
-    {
-        if (o.hasChanged())
-        {
-            SendMail sm = new SendMail();
-            sm.sendMail(this.getEmail(), "Product Available!!", "The product {" + (Product(o)).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from yours desire list.");
-        }
     }
 }
