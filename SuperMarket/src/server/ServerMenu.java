@@ -217,7 +217,7 @@ public class ServerMenu {
                                 {
                                     new SendMail().sendMail(u.getEmail(), "LORMarket:::Product Available!!!", "The product {" + listProducts.get(codProduct).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from your desire list.");
                                     System.out.println("E-mail sent to user {" + u.getName() + "}. The product was removed from his/her desire list.\n");
-                                    desireList.get(u).remove(i);
+                                    desireList.get(u).remove(code);
                                     break;
                                 }
                             }
