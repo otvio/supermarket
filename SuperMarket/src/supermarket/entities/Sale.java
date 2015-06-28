@@ -83,14 +83,14 @@ public class Sale
         this.dateSale = dateSale;
     }
     
-    @Override
-    public String toString()
+   
+    public String toString(User user, Product product)
     {
         return (
         "//--------------------------------------"+ "\n" + 
         "||CodeSale: " + this.codSale+ "\n" + 
-        "||CodeUser: " + this.codUser+ "\n" + 
-        "||CodeProduct: " + this.codProduct+ "\n" + 
+        "||User: " + user.getName()+ "\n" + 
+        "||Product: " + product.getNameProduct() + "\n" + 
         "||QuantityProducts: " + this.quantityProducts+ "\n" +   
         "||DateSale: " + dateFormat.format(this.dateSale.getTime())+ "\n" + 
         "\\\\--------------------------------------\n\n"

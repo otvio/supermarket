@@ -54,6 +54,7 @@ public class ClientMenu
                     
                     Collections.sort(productList, new Comparator<Product>()
                     {
+                        @Override
                         public int compare(Product e1, Product e2) 
                         {
                             return (e1.getCodProduct() < e2.getCodProduct()) ? -1 : 1;
@@ -91,6 +92,7 @@ public class ClientMenu
         
         Collections.sort(productList, new Comparator<Product>()
         {
+            @Override
             public int compare(Product e1, Product e2) 
             {
                 return (e1.getStockUnits() < e2.getStockUnits()) ? 1 : -1;
