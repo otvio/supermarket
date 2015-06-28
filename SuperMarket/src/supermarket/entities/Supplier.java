@@ -12,7 +12,7 @@ public class Supplier
     private String nameSupplier;
     private String nameContact;
     private String contacting;
-
+    
     
     public Supplier(int codSupplier, String nameSupplier, 
             String nameContact, String contacting) 
@@ -24,19 +24,19 @@ public class Supplier
     }
 
     
-	public void addFileSupplier()
-	 {
+    public void addFileSupplier()
+    {
         try
-		{
+        {
             File fp = new File(SUPPLIERS_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
-            
+
             if(fp.exists() == false)
             { // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
             }
-            
+
             pw.print(this.codSupplier);
             pw.print(",");
             pw.print(this.nameSupplier);
@@ -44,12 +44,12 @@ public class Supplier
             pw.print(this.nameContact);
             pw.print(",");
             pw.println(this.contacting);
-            
+
             pw.close();
             fw.close();
         }
         catch(Exception e)
-		{
+        {
             System.out.println("Can't store in the file :(");
         }
     }

@@ -1,17 +1,13 @@
 
 package server;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.PrintStream;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+
+import java.io.*;
+import java.net.*;
+import java.util.*;
 import supermarket.entities.User;
-import static server.Server.USERS_FILE;
-import static server.Server.DESIRE_FILE;
+import static connection.Connection.*;
+import static server.Server.*;
 
 // usada para ficar recebendo as conexões dos clientes
 class ClientConnection implements Runnable 
@@ -65,6 +61,7 @@ class ClientConnection implements Runnable
                 {
                     clientList.add(cs);                              // adicionando-o à lista de clientes
                     cs.communicate.setNameClient(cs.user.getName()); // setando o nome do cliente, para usá-lo nas mensagens
+                    cs.communicate.sendToClient(USERNAME + DELIMITER + cs.user.getName());
                     cs.communicate.sendHeader();                     // printando o cabeçalho do programa para o cliente
                     
                     if (beNotified)
@@ -101,8 +98,8 @@ class ClientConnection implements Runnable
         // se o usuário não foi encontrado
         if (user == null)
         {
-            cl.sendToClient("\n::: This user is already logged in.");
-            cl.sendToClient("::: Try again later.\n");
+            cl.sendToClient_SimpleText("\n::: This user is already logged in.");
+            cl.sendToClient_SimpleText("::: Try again later.\n");
             return (null);
         }
         else
@@ -122,19 +119,20 @@ class ClientConnection implements Runnable
         String user_choice;                         // String para a opção de acesso no sistema
         User user = null;
         
-        cl.sendToClient("\n\t:::::    Welcome to the LORMarket!    :::::\n");
-        
-        cl.sendToClient("You are a:\n"
-                         + "   (1). New user\n"
-                         + "   (2). Existent user\n");
+        cl.sendToClient_SimpleText("\n\t:::::    Welcome to the LORMarket!    :::::\n");
         
         do
         {
+            cl.sendToClient_SimpleText("You are a\n"
+                                 + "   (1). New user\n"
+                                 + "   (2). Existent user\n\n"
+                                 + "Choice:");
+            
             user_choice = cl.receiveFromClient();
             
             if ((user_choice.equals("2")) && userList.isEmpty()) // Caso ainda não exista nenhum usuário na lista de usuários
             {
-                cl.sendToClient("::: There's no users yet, create a new one! :::\n\n");
+                cl.sendToClient_SimpleText("::: There's no users yet, create a new one! :::\n\n");
                 user_choice = "3";
             }
                 
@@ -145,58 +143,58 @@ class ClientConnection implements Runnable
         {
             codeUser = (!userList.isEmpty()) ? (userList.get(userList.size() - 1).getCodUser() + 1) : 0;  // Código que será adicionado para o usuário
             
-            cl.sendToClient("Please, answer according to what will be asked.");
+            cl.sendToClient_SimpleText("Please, answer according to what will be asked.");
             
-            cl.sendToClient("\n::: Personal information");
+            cl.sendToClient_SimpleText("\n::: Personal information");
             
-            cl.sendToClient("Name: ");
+            cl.sendToClient_SimpleText("Name:");
             name = cl.receiveFromClient();       // Armazena o nome fornecido pelo usuário 
             
-            cl.sendToClient("Address: ");
+            cl.sendToClient_SimpleText("Address:");
             address = cl.receiveFromClient();    // Solicita o endereço
             
-            cl.sendToClient("E-mail: ");
+            cl.sendToClient_SimpleText("E-mail:");
             email = cl.receiveFromClient();      // Solicita o e-mail
             
-            cl.sendToClient("Telephone: ");
+            cl.sendToClient_SimpleText("Telephone:");
             telephone = cl.receiveFromClient();  // Solicita o telefone
             
-            cl.sendToClient("\n::: Login information");
+            cl.sendToClient_SimpleText("\n::: Login information");
             
-            cl.sendToClient("ID/Nickname: ");
+            cl.sendToClient_SimpleText("ID/Nickname:");
             ID = cl.receiveFromClient();         // Solicita o ID
 
             do
             {
-                cl.sendToClient("Password: ");
+                cl.sendToClient_SimpleText("Password:");
                 password = cl.receiveFromClient();          // Solicita a senha
 
-                cl.sendToClient("Confirm the password: ");
+                cl.sendToClient_SimpleText("Confirm the password:");
                 passwordConfirm = cl.receiveFromClient();   // Solicita a confirmação da senha
             
                 if (!password.equals(passwordConfirm))
-                    cl.sendToClient("::: Incorrect password! Try again. :::\n");
+                    cl.sendToClient_SimpleText("::: Incorrect password! Try again. :::\n");
                 
             } while(!password.equals(passwordConfirm));     // Loop para o usuário digitar e confirmar as senhas corretas
             
             user = new User(codeUser, name, address, email, telephone, ID, password);
 
-            cl.sendToClient("\n::: New user inserted successfully! :::");
+            cl.sendToClient_SimpleText("\n::: New user inserted successfully! :::");
         }
         else
         {
             do
             {
-                cl.sendToClient("ID/Nickname: ");
+                cl.sendToClient_SimpleText("ID/Nickname:");
                 ID = cl.receiveFromClient();         // Solicita o ID
 
-                cl.sendToClient("Password: ");
+                cl.sendToClient_SimpleText("Password:");
                 password = cl.receiveFromClient();   // Solicita a senha
 
                 user = isValidUser(ID, password);    // Verifica se o usuário já existe no sistema
                 
                 if (user == null)  // Caso o usuário ou senha seja digitada errada ele informa que deve ser repetida a operação
-                    cl.sendToClient("::: Incorrect ID/password! Try again. :::\n");
+                    cl.sendToClient_SimpleText("::: Incorrect ID/password! Try again. :::\n");
                                 
             } while (user == null); // Loop para o usuário digitar corretamente seu username e password
             

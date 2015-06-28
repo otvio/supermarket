@@ -1,6 +1,7 @@
 
 package server;
 
+import static connection.Connection.*;
 import java.io.PrintStream;
 import java.util.Scanner;
 
@@ -30,20 +31,31 @@ public class CommunicateWithClient implements Runnable
     {
         toClient.println(message);
     }
+    
+    public void sendToClient_SimpleText(String message)
+    {
+        toClient.println(SIMPLETEXT + DELIMITER + message);
+    }
 
     public String receiveFromClient()
     {
-        return ((fromClient.hasNextLine()) ? fromClient.nextLine() : "");
+        return ((fromClient.hasNext()) ? fromClient.next() : "");
     }
 
     @Override
     public void run()
     {
-        while(fromClient.hasNextLine()) // loop para ficar recebendo do cliente
+        String[] command;
+
+        while(fromClient.hasNext()) // loop para ficar recebendo do cliente
         {
             String message = fromClient.nextLine();
+            command = message.split("\\|");
+            
+            
+            
             System.out.println(message);
-            toClient.println(message);
+            //toClient.println(message);
         }
     }
 }

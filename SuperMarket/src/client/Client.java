@@ -21,24 +21,10 @@ public class Client
         // criando a thread de comunicação com o servidor
         communicate = new CommunicateWithServer(
                         new PrintStream(socket.getOutputStream()), 
-                        new Scanner(socket.getInputStream()));
+                        new Scanner(socket.getInputStream()), scanner);
 
         // iniciando a thread de comunicação com o servidor
         new Thread(communicate).start();
-        new Thread(new ClientSendThread()).start();
-    }
-    
-    class ClientSendThread implements Runnable
-    {
-        @Override
-        public void run()
-        {
-            while(scanner.hasNextLine())
-            {
-                String command = scanner.nextLine();
-                communicate.sendToServer(command);
-            }
-        }
     }
     
     public static void main (String[] args)
