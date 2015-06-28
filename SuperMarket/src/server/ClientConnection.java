@@ -6,41 +6,37 @@ import java.io.*;
 import java.net.*;
 import java.util.*;
 import supermarket.entities.User;
-import static connection.Connection.*;
 import static server.Server.*;
 
 // usada para ficar recebendo as conexões dos clientes
-class ClientConnection implements Runnable 
+public class ClientConnection implements Runnable 
 {
     //Singleton pattern:
     private static ClientConnection clientConnection = null;
-    
-    private static boolean beNotified;
     private static ServerSocket serverSocket;
     
     private static List<User> userList;
     private static List<ClientStruct> clientList;
+
     
-    
-    private ClientConnection(ServerSocket serverSocket, List<ClientStruct> clientList, 
-            boolean beNotified) throws Exception 
+    private ClientConnection(ServerSocket serverSocket, 
+            List<ClientStruct> clientList) throws Exception 
     {
         BufferedReader buffReader;
 
         ClientConnection.serverSocket = serverSocket;
         ClientConnection.clientList = clientList;
-        ClientConnection.beNotified = beNotified;
         
         buffReader = new BufferedReader(new FileReader(USERS_FILE));   // Leitura dos usuários no arquivo
         userList = getUsersList(buffReader);                           // Armazena os usuários na lista de usuários
         buffReader.close();
     }
     
-    public static synchronized ClientConnection getInstance(ServerSocket serverSocket, List<ClientStruct> clientList, 
-            boolean beNotified) throws Exception
+    public static synchronized ClientConnection getInstance(
+            ServerSocket serverSocket, List<ClientStruct> clientList) throws Exception
     {
         if (ClientConnection.clientConnection == null)
-            ClientConnection.clientConnection = new ClientConnection(serverSocket, clientList, beNotified);
+            ClientConnection.clientConnection = new ClientConnection(serverSocket, clientList);
         
         return ClientConnection.clientConnection;
     }
@@ -48,29 +44,12 @@ class ClientConnection implements Runnable
     @Override
     public void run()
     {
-        ClientStruct cs;
-        
         // loop para receber todos os clientes
         while(true)
         {
             try
             {
-                cs = getClient();
-
-                if (cs != null) // se foi possível receber algum cliente que fez login corretamente
-                {
-                    clientList.add(cs);                              // adicionando-o à lista de clientes
-                    cs.communicate.setNameClient(cs.user.getName()); // setando o nome do cliente, para usá-lo nas mensagens
-                    cs.communicate.sendToClient(USERNAME + DELIMITER + cs.user.getName());
-                    cs.communicate.sendHeader();                     // printando o cabeçalho do programa para o cliente
-                    
-                    if (beNotified)
-                    {
-                        System.out.println("\n::: ClientConnection # run() - New Connection Accepted! :) ");
-                        System.out.println("::: User {" + cs.user.getName() + "} logged in. ");
-                        System.out.println("::: Now, " + clientList.size() + " client(s) logged in! \n");
-                    }
-                }
+                getClient();
             }
             catch (Exception e)
             {
@@ -80,7 +59,7 @@ class ClientConnection implements Runnable
     }
 
     // função que recebe cada cliente e cria um listener para cada
-    public ClientStruct getClient() throws Exception
+    public void getClient() throws Exception
     {
         // recebendo a conexão
         Socket socketUser = serverSocket.accept();
@@ -91,23 +70,24 @@ class ClientConnection implements Runnable
 
         // criando o listener para o cliente
         CommunicateWithClient cl = new CommunicateWithClient(sendToClient, receiveFromClient);
-        
-        // obtendo o usuário no sistema
-        User user = askUser(cl);
-        
-        // se o usuário não foi encontrado
-        if (user == null)
-        {
-            cl.sendToClient_SimpleText("\n::: This user is already logged in.");
-            cl.sendToClient_SimpleText("::: Try again later.\n");
-            return (null);
-        }
-        else
-        {
-            new Thread(cl).start();
-            List<Integer> listDesires = getUserDesires(user.getCodUser());
-            return (new ClientStruct(user, cl, listDesires));
-        }
+        new Thread(cl).start();
+//        
+//        // obtendo o usuário no sistema
+//        User user = askUser(cl);
+//        
+//        // se o usuário não foi encontrado
+//        if (user == null)
+//        {
+//            cl.sendToClient_SimpleText("\n::: This user is already logged in.");
+//            cl.sendToClient_SimpleText("::: Try again later.\n");
+//            return (null);
+//        }
+//        else
+//        {
+//            new Thread(cl).start();
+//            List<Integer> listDesires = getUserDesires(user.getCodUser());
+//            return (new ClientStruct(user, cl, listDesires));
+//        }
     }
     
     public User askUser(CommunicateWithClient cl)
@@ -246,7 +226,7 @@ class ClientConnection implements Runnable
         return (userlist);
     }
 	
-    public List<Integer> getUserDesires(int codeUser) throws Exception
+    public static List<Integer> getUserDesires(int codeUser) throws Exception
     {
 	String line;
         List<Integer> desireList = new ArrayList<>();
@@ -263,5 +243,15 @@ class ClientConnection implements Runnable
         }
         
         return desireList;
+    }
+    
+    public static List<User> getUserList() 
+    {
+        return userList;
+    }
+    
+    public static List<ClientStruct> getClientList() 
+    {
+        return clientList;
     }
 }

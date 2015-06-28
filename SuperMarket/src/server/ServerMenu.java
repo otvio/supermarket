@@ -57,6 +57,7 @@ public class ServerMenu {
             System.out.println("4 - Add a new category");
             System.out.println("5 - Update product in the stock");
             System.out.println("6 - Quit");
+            System.out.println("\n7 - See the list of users online");
                 
             choice = scanner.nextInt();
             
@@ -226,6 +227,14 @@ public class ServerMenu {
                     else
                         System.out.println("\n::: The product {" + nameProduct + "} wasn't found in the LORMarket!\n");
                 }
+            }
+            else if (choice == 7)
+            {
+                for (ClientStruct c : clientList) 
+                {
+                    System.out.println(c.user.toString());
+                }
+                System.out.println("\n::: Users online listed successfully! :::");
             }
             
         } while (choice != 6);

@@ -1,54 +1,24 @@
 
 package client;
 
-import static connection.Connection.*;
+import command.Command;
+import static command.Command.*;
+import login.LoginAttempt;
 import java.io.PrintStream;
 import java.util.Scanner;
 
 public class CommunicateWithServer implements Runnable
 {
+    private Client client;
     private ClientMenu clientMenu;
     private final PrintStream toServer;
     private final Scanner fromServer;
-    private final Scanner input;
-    private boolean stopThread;
-    //myThread aux = new myThread();
     
-    public CommunicateWithServer(PrintStream sendToServer, Scanner receiveFromServer, final Scanner input)
+    public CommunicateWithServer(Client client, PrintStream sendToServer, Scanner receiveFromServer)
     {
         this.fromServer = receiveFromServer;
         this.toServer = sendToServer;
-        this.input = input;
-        this.stopThread = false;
-        //Tentando arrumar o bug do CommunicateWithServer ... (thread não parando no momento desejado)
-        
-        //aux.start();
-    }
-    
-    class myThread implements Runnable{
-        
-         private Thread t;
-        @Override
-        public synchronized void run()
-        {
-            while(t != null && !stopThread)
-            {
-                String command = input.nextLine();
-                sendToServer(command);
-            }
-
-            System.out.println("ACABOOOOOOOOO");
-        }
-        
-        public void stop(){
-            t.interrupt();
-            t = null;
-        }
-
-        public void start(){
-            t = new Thread(this);
-            t.start();
-        }
+        this.client = client;
     }
     
     public void sendToServer(String message)
@@ -64,49 +34,66 @@ public class CommunicateWithServer implements Runnable
     @Override
     public synchronized void run()
     {
-        String[] command;
-        boolean fromInput = false;
-        while(fromServer.hasNext() || input.hasNext())  // loop para ficar recebendo do servidor
+        Command command;
+        LoginAttempt login;
+        
+        while(fromServer.hasNextLine())  // loop para ficar recebendo do servidor
         {
-            String message = (fromInput) ? input.nextLine() : fromServer.nextLine();
-            command = (fromInput) ? new String[]{LOGIN} : message.split("\\|");
-            //System.out.println("command[0]:{" + command[0] + "}\n" + "message:{" + message + "}\n");
+            command = new Command(fromServer.nextLine());
             
-            switch (command[0]) 
+            switch (command.getArray()[0]) 
             {
                 case LOGIN:
-                    sendToServer(message);
-                    fromInput = false;
+                    login = LoginAttempt.valueOf(command.getArray()[1]);
+                    checkLogin(command, login);
                     break;
                 
-                case USERNAME:
-                    fromInput = false;
-                    //aux.stop();
-                    
-                    clientMenu = new ClientMenu(command[1], this, input);
-                    System.out.println("antes do clientMenu.menu()...");
-                    
-                    new Thread()
-                    {
-                        @Override
-                        public void run()
-                        {
-                            clientMenu.menu();
-                        }
-                    }.start();
-                    System.out.println("dpois do clientMenu.menu()...");
+                case NEWUSER:
+                    login = LoginAttempt.valueOf(command.getArray()[1]);
+                    checkLogin(command, login);
                     break;
+                
+//                case USERNAME:
+//                    clientMenu = new ClientMenu(command[1], this);
+//                    clientMenu.menu();
+//                    break;
+                    
                 case SIMPLETEXT:
-//                    System.out.println("message:" + message);
-//                    System.out.println("command.length" + command.length);
-//                    System.out.println("command[1].length()" + command[1].length());
-                    fromInput = (command.length > 1) && (command[1].length() > 1) && (command[1].charAt(command[1].length() - 1) == ':') && (command[1].charAt(command[1].length() - 2) != ':');
-                    System.out.println((command.length == 1) ? "" : command[1]);
+                    System.out.println((command.getArray().length == 1) ? "" : command.getArray()[1]);
                     break;
+                    
                 default:
-                    System.out.println(message);
+                    System.out.println(command.get());
                     break;
             }
+        }
+    }
+
+    private void checkLogin(Command command, LoginAttempt login) 
+    {
+        switch (login)
+        {
+            case SUCCESS:
+                System.out.println("\n::: You are now logged in! :::\n");
+                clientMenu = new ClientMenu(command.getArray()[2], this);
+                clientMenu.menu();
+                break;
+
+            case ALREADY_LOGGED:
+                System.out.println("\n::: This user is already logged in.");
+                System.out.println("::: Try again later.\n");
+                client.loginAttempt();
+                break;
+
+            case FAILED:
+                System.out.println("\n::: Incorrect ID/password! :::\n");
+                client.loginAttempt();
+                break;
+
+            case ALREADY_EXISTS:
+                System.out.println("\n::: This user already exists! :::");
+                client.loginAttempt();
+                break;
         }
     }
 }

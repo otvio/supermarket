@@ -23,7 +23,7 @@ public class ClientMenu
     List <Product> desireList = new ArrayList<>();
         
     
-    public ClientMenu(String nameClient, CommunicateWithServer communicateWithServer, Scanner input)
+    public ClientMenu(String nameClient, CommunicateWithServer communicateWithServer)
     {
         this.communicateWithServer = communicateWithServer;
         this.nameClient = nameClient;

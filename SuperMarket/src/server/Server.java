@@ -23,7 +23,6 @@ public class Server
     public static final String CATEGORIES_FILE = "categories.csv";
     
     private static Scanner scanner;
-    private static String beNotified;
     private static ServerSocket serverSocket;
     private static List<ClientStruct> clientList;
     private static ClientConnection clientConnection = null;
@@ -53,17 +52,9 @@ public class Server
             getInstance();
             System.out.println("::: Server Connected! :) :::");
             
-            do
-            {
-                System.out.println("\nDo you want to be notified when a new user enter?\n"
-                                   + "   (Y). Yes\n"
-                                   + "   (N). No\n");
-                Server.beNotified = scanner.nextLine().toUpperCase();
-            } while (!Server.beNotified.equals("Y") && !Server.beNotified.equals("N"));
-            
             if (clientConnection == null)
             {
-                clientConnection = ClientConnection.getInstance(serverSocket, clientList, Server.beNotified.equals("Y"));
+                clientConnection = ClientConnection.getInstance(serverSocket, clientList);
                 new Thread(clientConnection).start();
             }
             

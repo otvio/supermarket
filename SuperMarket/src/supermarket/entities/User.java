@@ -4,6 +4,7 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Objects;
 import static server.Server.USERS_FILE;
 
 public class User
@@ -141,4 +142,41 @@ public class User
     {
         return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
     }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (obj == null) 
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass()) 
+        {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.name, other.name)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.telephone, other.telephone)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.ID, other.ID)) 
+        {
+            return false;
+        }
+        return Objects.equals(this.password, other.password);
+    }
+    
+    
 }
