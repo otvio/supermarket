@@ -1,16 +1,18 @@
 
 package supermarket.entities;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
 public class Sale 
-{
+{    
     private int codSale;
     private int codUser;
     private int codProduct;
     private int quantityProducts;
     private Calendar dateSale;
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
 
     
     public Sale(int codSale, int codUser, int codProduct, 
@@ -29,8 +31,7 @@ public class Sale
                 Integer.parseInt(date[2]), 
                 Integer.parseInt(date[1]) - 1, Integer.parseInt(date[0])
         );
-    }
-    
+    }    
     
     public int getCodSale() 
     {
@@ -80,5 +81,19 @@ public class Sale
     public void setDateSale(Calendar dateSale) 
     {
         this.dateSale = dateSale;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return (
+        "//--------------------------------------"+ "\n" + 
+        "||CodeSale: " + this.codSale+ "\n" + 
+        "||CodeUser: " + this.codUser+ "\n" + 
+        "||CodeProduct: " + this.codProduct+ "\n" + 
+        "||QuantityProducts: " + this.quantityProducts+ "\n" +   
+        "||DateSale: " + dateFormat.format(this.dateSale.getTime())+ "\n" + 
+        "\\\\--------------------------------------\n\n"
+        );
     }
 }

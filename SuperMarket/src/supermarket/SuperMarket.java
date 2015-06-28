@@ -9,14 +9,12 @@ package supermarket;
  *
  * @author 8937402
  */
-public class SuperMarket
-{
+public class SuperMarket {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) 
-    {
+    public static void main(String[] args) {
         // TODO code application logic here
     }
     
