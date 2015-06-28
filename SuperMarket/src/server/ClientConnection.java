@@ -90,120 +90,120 @@ public class ClientConnection implements Runnable
 //        }
     }
     
-    public User askUser(CommunicateWithClient cl)
-    {
-        int codeUser;                               // Variável para o código do usuário
-        String name, address;                       // Strings para os dados pessoais do usuário
-        String email, telephone;                    // Strings para os dados pessoais do usuário
-        String ID, password, passwordConfirm;       // Strings para a confirmação de acesso do usuário
-        String user_choice;                         // String para a opção de acesso no sistema
-        User user = null;
-        
-        cl.sendToClient_SimpleText("\n\t:::::    Welcome to the LORMarket!    :::::\n");
-        
-        do
-        {
-            cl.sendToClient_SimpleText("You are a\n"
-                                 + "   (1). New user\n"
-                                 + "   (2). Existent user\n\n"
-                                 + "Choice:");
-            
-            user_choice = cl.receiveFromClient();
-            
-            if ((user_choice.equals("2")) && userList.isEmpty()) // Caso ainda não exista nenhum usuário na lista de usuários
-            {
-                cl.sendToClient_SimpleText("::: There's no users yet, create a new one! :::\n\n");
-                user_choice = "3";
-            }
-                
-        } while ((!user_choice.equals("1")) && (!user_choice.equals("2"))); // Loop para escolher uma das duas opções
-        
-
-        if (user_choice.equals("1"))  // Caso a opção escolhida seja 1, então será adicionado um novo usuário ao sistema
-        {
-            codeUser = (!userList.isEmpty()) ? (userList.get(userList.size() - 1).getCodUser() + 1) : 0;  // Código que será adicionado para o usuário
-            
-            cl.sendToClient_SimpleText("Please, answer according to what will be asked.");
-            
-            cl.sendToClient_SimpleText("\n::: Personal information");
-            
-            cl.sendToClient_SimpleText("Name:");
-            name = cl.receiveFromClient();       // Armazena o nome fornecido pelo usuário 
-            
-            cl.sendToClient_SimpleText("Address:");
-            address = cl.receiveFromClient();    // Solicita o endereço
-            
-            cl.sendToClient_SimpleText("E-mail:");
-            email = cl.receiveFromClient();      // Solicita o e-mail
-            
-            cl.sendToClient_SimpleText("Telephone:");
-            telephone = cl.receiveFromClient();  // Solicita o telefone
-            
-            cl.sendToClient_SimpleText("\n::: Login information");
-            
-            cl.sendToClient_SimpleText("ID/Nickname:");
-            ID = cl.receiveFromClient();         // Solicita o ID
-
-            do
-            {
-                cl.sendToClient_SimpleText("Password:");
-                password = cl.receiveFromClient();          // Solicita a senha
-
-                cl.sendToClient_SimpleText("Confirm the password:");
-                passwordConfirm = cl.receiveFromClient();   // Solicita a confirmação da senha
-            
-                if (!password.equals(passwordConfirm))
-                    cl.sendToClient_SimpleText("::: Incorrect password! Try again. :::\n");
-                
-            } while(!password.equals(passwordConfirm));     // Loop para o usuário digitar e confirmar as senhas corretas
-            
-            user = new User(codeUser, name, address, email, telephone, ID, password);
-
-            cl.sendToClient_SimpleText("\n::: New user inserted successfully! :::");
-        }
-        else
-        {
-            do
-            {
-                cl.sendToClient_SimpleText("ID/Nickname:");
-                ID = cl.receiveFromClient();         // Solicita o ID
-
-                cl.sendToClient_SimpleText("Password:");
-                password = cl.receiveFromClient();   // Solicita a senha
-
-                user = isValidUser(ID, password);    // Verifica se o usuário já existe no sistema
-                
-                if (user == null)  // Caso o usuário ou senha seja digitada errada ele informa que deve ser repetida a operação
-                    cl.sendToClient_SimpleText("::: Incorrect ID/password! Try again. :::\n");
-                                
-            } while (user == null); // Loop para o usuário digitar corretamente seu username e password
-            
-            
-            // loop para verificar se o usuário já está logado
-            for (ClientStruct cs : clientList)
-            {
-                if (cs.user.getCodUser() == user.getCodUser())
-                {
-                    user = null;
-                    break;
-                }
-            }
-        }
-        
-        return(user);
-    }
+//    public User askUser(CommunicateWithClient cl)
+//    {
+//        int codeUser;                               // Variável para o código do usuário
+//        String name, address;                       // Strings para os dados pessoais do usuário
+//        String email, telephone;                    // Strings para os dados pessoais do usuário
+//        String ID, password, passwordConfirm;       // Strings para a confirmação de acesso do usuário
+//        String user_choice;                         // String para a opção de acesso no sistema
+//        User user = null;
+//        
+//        cl.sendToClient_SimpleText("\n\t:::::    Welcome to the LORMarket!    :::::\n");
+//        
+//        do
+//        {
+//            cl.sendToClient_SimpleText("You are a\n"
+//                                 + "   (1). New user\n"
+//                                 + "   (2). Existent user\n\n"
+//                                 + "Choice:");
+//            
+//            user_choice = cl.receiveFromClient();
+//            
+//            if ((user_choice.equals("2")) && userList.isEmpty()) // Caso ainda não exista nenhum usuário na lista de usuários
+//            {
+//                cl.sendToClient_SimpleText("::: There's no users yet, create a new one! :::\n\n");
+//                user_choice = "3";
+//            }
+//                
+//        } while ((!user_choice.equals("1")) && (!user_choice.equals("2"))); // Loop para escolher uma das duas opções
+//        
+//
+//        if (user_choice.equals("1"))  // Caso a opção escolhida seja 1, então será adicionado um novo usuário ao sistema
+//        {
+//            codeUser = (!userList.isEmpty()) ? (userList.get(userList.size() - 1).getCodUser() + 1) : 0;  // Código que será adicionado para o usuário
+//            
+//            cl.sendToClient_SimpleText("Please, answer according to what will be asked.");
+//            
+//            cl.sendToClient_SimpleText("\n::: Personal information");
+//            
+//            cl.sendToClient_SimpleText("Name:");
+//            name = cl.receiveFromClient();       // Armazena o nome fornecido pelo usuário 
+//            
+//            cl.sendToClient_SimpleText("Address:");
+//            address = cl.receiveFromClient();    // Solicita o endereço
+//            
+//            cl.sendToClient_SimpleText("E-mail:");
+//            email = cl.receiveFromClient();      // Solicita o e-mail
+//            
+//            cl.sendToClient_SimpleText("Telephone:");
+//            telephone = cl.receiveFromClient();  // Solicita o telefone
+//            
+//            cl.sendToClient_SimpleText("\n::: Login information");
+//            
+//            cl.sendToClient_SimpleText("ID/Nickname:");
+//            ID = cl.receiveFromClient();         // Solicita o ID
+//
+//            do
+//            {
+//                cl.sendToClient_SimpleText("Password:");
+//                password = cl.receiveFromClient();          // Solicita a senha
+//
+//                cl.sendToClient_SimpleText("Confirm the password:");
+//                passwordConfirm = cl.receiveFromClient();   // Solicita a confirmação da senha
+//            
+//                if (!password.equals(passwordConfirm))
+//                    cl.sendToClient_SimpleText("::: Incorrect password! Try again. :::\n");
+//                
+//            } while(!password.equals(passwordConfirm));     // Loop para o usuário digitar e confirmar as senhas corretas
+//            
+//            user = new User(codeUser, name, address, email, telephone, ID, password);
+//
+//            cl.sendToClient_SimpleText("\n::: New user inserted successfully! :::");
+//        }
+//        else
+//        {
+//            do
+//            {
+//                cl.sendToClient_SimpleText("ID/Nickname:");
+//                ID = cl.receiveFromClient();         // Solicita o ID
+//
+//                cl.sendToClient_SimpleText("Password:");
+//                password = cl.receiveFromClient();   // Solicita a senha
+//
+//                user = isValidUser(ID, password);    // Verifica se o usuário já existe no sistema
+//                
+//                if (user == null)  // Caso o usuário ou senha seja digitada errada ele informa que deve ser repetida a operação
+//                    cl.sendToClient_SimpleText("::: Incorrect ID/password! Try again. :::\n");
+//                                
+//            } while (user == null); // Loop para o usuário digitar corretamente seu username e password
+//            
+//            
+//            // loop para verificar se o usuário já está logado
+//            for (ClientStruct cs : clientList)
+//            {
+//                if (cs.user.getCodUser() == user.getCodUser())
+//                {
+//                    user = null;
+//                    break;
+//                }
+//            }
+//        }
+//        
+//        return(user);
+//    }
     
-    public User isValidUser(String ID, String password) // Método para verificar a existência do usuário no sistema
-    {
-        if (userList == null)             // Caso a lista de usuários não exista é retornado null
-            return (null);
-        
-        for (User user : userList)        // Loop para verificar se existe o usuário solicitado no sistema
-            if (user.getID().equals(ID) && user.getPassword().equals(password)) 
-                return(userList.get(user.getCodUser()));               
-
-        return (null);                    // Retorna null caso não ache o usuário
-    }
+//    public User isValidUser(String ID, String password) // Método para verificar a existência do usuário no sistema
+//    {
+//        if (userList == null)             // Caso a lista de usuários não exista é retornado null
+//            return (null);
+//        
+//        for (User user : userList)        // Loop para verificar se existe o usuário solicitado no sistema
+//            if (user.getID().equals(ID) && user.getPassword().equals(password)) 
+//                return(userList.get(user.getCodUser()));               
+//
+//        return (null);                    // Retorna null caso não ache o usuário
+//    }
     
     public static List<User> getUsersList(BufferedReader buffReader) throws Exception  // Irá criar uma lista de usuários a partir dos dados do arquivo
     {

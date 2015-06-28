@@ -8,6 +8,7 @@ import supermarket.entities.User;
 
 public class Login
 {
+    private int codClient;
     private String nameClient;
     private LoginAttempt attempt;
     private final Command command;
@@ -55,6 +56,7 @@ public class Login
             if (attempt == LoginAttempt.SUCCESS)
             {
                 nameClient = user.getName();
+                codClient = user.getCodUser();
                 try
                 {
                     clientlist.add(new ClientStruct(
@@ -99,6 +101,7 @@ public class Login
         if (attempt == LoginAttempt.SUCCESS)
         {
             nameClient = user.getName();
+            codClient = user.getCodUser();
             userlist.add(user);
             try
             {
@@ -114,5 +117,10 @@ public class Login
     public String getNameClient()
     {
         return nameClient;
+    }
+    
+    public int getCodClient()
+    {
+        return codClient;
     }
 }

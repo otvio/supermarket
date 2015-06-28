@@ -161,8 +161,20 @@ public class Product
         System.out.println("||Product name : " + this.getNameProduct());
         System.out.println("||Price: " + this.getUnitPrice());
         System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
-        System.out.println("||Category: " + c.getNameCategory());
-        System.out.println("||Units: " + this.getStockUnits());            
+        
+        if (c != null)
+            System.out.println("||Category: " + c.getNameCategory());
+        
+        if (this.getStockUnits() > 0)
+            System.out.println("||Units: " + this.getStockUnits());    
+        else
+            System.out.println("||Product Unavailable!");
+        
         System.out.println("\\\\--------------------------------------\n\n"); 
+    }
+
+    public String getValidity()
+    {
+        return dateFormat.format(validityProduct.getTime());
     }
 }

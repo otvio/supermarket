@@ -7,7 +7,10 @@ import command.*;
 import static command.Command.*;
 
 import java.io.PrintStream;
+import java.util.List;
 import java.util.Scanner;
+import static server.Server.*;
+import supermarket.entities.*;
 
 public class CommunicateWithClient implements Runnable
 {
@@ -21,11 +24,6 @@ public class CommunicateWithClient implements Runnable
         this.fromClient = receiveFromClient;
     }
     
-    public void sendHeader()
-    {
-        toClient.println("\n\t:::::    Welcome to the LORMarket, " + nameClient + "    :::::\n");
-    }
-    
     public void setNameClient(String nameClient)
     {
         this.nameClient = nameClient;
@@ -34,11 +32,6 @@ public class CommunicateWithClient implements Runnable
     public void sendToClient(String message)
     {
         toClient.println(message);
-    }
-    
-    public void sendToClient_SimpleText(String message)
-    {
-        toClient.println(SIMPLETEXT + DELIMITER + message);
     }
 
     public String receiveFromClient()
@@ -62,13 +55,33 @@ public class CommunicateWithClient implements Runnable
                 case LOGIN:
                     login = new Login(command, this);
                     attempt = login.loginAttempt();
-                    sendToClient(new Command(new String[]{LOGIN, attempt.name(), (attempt == LoginAttempt.SUCCESS) ? login.getNameClient() : ""}).get());
+                    
+                    sendToClient(new Command(new String[]{LOGIN, attempt.name(),
+                        (attempt == LoginAttempt.SUCCESS) ? login.getNameClient() : ""}).get());
+
+                    if (attempt == LoginAttempt.SUCCESS)
+                    {
+                        sendProducts();
+                        sendCategories();
+                        sendDesires(login.getCodClient());
+                    }
+
                     break;
                     
                 case NEWUSER:
                     login = new Login(command, this);
                     attempt = login.createNewUser();
-                    sendToClient(new Command(new String[]{NEWUSER, attempt.name(), (attempt == LoginAttempt.SUCCESS) ? login.getNameClient() : ""}).get());
+                    
+                    sendToClient(new Command(new String[]{NEWUSER, attempt.name(),
+                        (attempt == LoginAttempt.SUCCESS) ? login.getNameClient() : ""}).get());
+                    
+                    if (attempt == LoginAttempt.SUCCESS)
+                    {
+                        sendProducts();
+                        sendCategories();
+                        sendDesires(login.getCodClient());
+                    }
+                    
                     break;
                     
                 case SIMPLETEXT:
@@ -80,5 +93,52 @@ public class CommunicateWithClient implements Runnable
                     break;
             }
         }
+    }
+    
+    public void sendProducts()
+    {
+        List<Product> productlist = BringList();
+        
+        for (Product product : productlist)
+        {
+            sendToClient(new Command(new String[]{
+                SEND_PRODUCT,
+                String.valueOf(product.getCodProduct()), 
+                String.valueOf(product.getCodSupplier()),
+                String.valueOf(product.getCodCategory()), 
+                String.valueOf(product.getStockUnits()), 
+                String.valueOf(product.getOrderedUnits()),
+                String.valueOf(product.getUnitPrice()), 
+                String.valueOf(product.getNameProduct()), 
+                String.valueOf(product.getValidity())
+            }).get());
+        }
+    }
+
+    private void sendCategories() 
+    {
+        List<Category> list = BringCategoryList();
+        for (Category c : list)
+        {
+            sendToClient(new Command(new String[]{
+                SEND_CATEGORY,
+                String.valueOf(c.getCodCategory()),
+                String.valueOf(c.getNameCategory()), 
+                String.valueOf(c.getDescription())
+            }).get());
+        }
+    }
+
+    private void sendDesires(int codClient) 
+    {
+        List<Integer> list;
+        try
+        {
+            list = ClientConnection.getUserDesires(codClient);
+            
+            for (Integer c : list)
+                sendToClient(new Command(new String[]{SEND_DESIRE, String.valueOf(c)}).get());
+            
+        } catch (Exception ex) { }
     }
 }

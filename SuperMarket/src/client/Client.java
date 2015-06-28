@@ -33,7 +33,7 @@ public class Client
     
     public void loginAttempt()
     {
-        LoginAttempt login = LoginAttempt.FAILED;
+        LoginAttempt login;
         String name, address;                       // Strings para os dados pessoais do usuário
         String email, telephone;                    // Strings para os dados pessoais do usuário
         String ID, password, passwordConfirm;       // Strings para a confirmação de acesso do usuário

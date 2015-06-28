@@ -6,6 +6,7 @@ import static command.Command.*;
 import login.LoginAttempt;
 import java.io.PrintStream;
 import java.util.Scanner;
+import supermarket.entities.*;
 
 public class CommunicateWithServer implements Runnable
 {
@@ -13,12 +14,14 @@ public class CommunicateWithServer implements Runnable
     private ClientMenu clientMenu;
     private final PrintStream toServer;
     private final Scanner fromServer;
+    private final CommunicateWithServer cws;
     
     public CommunicateWithServer(Client client, PrintStream sendToServer, Scanner receiveFromServer)
     {
         this.fromServer = receiveFromServer;
         this.toServer = sendToServer;
         this.client = client;
+        this.cws = this;
     }
     
     public void sendToServer(String message)
@@ -41,7 +44,7 @@ public class CommunicateWithServer implements Runnable
         {
             command = new Command(fromServer.nextLine());
             
-            switch (command.getArray()[0]) 
+            switch (command.getArray()[0])
             {
                 case LOGIN:
                     login = LoginAttempt.valueOf(command.getArray()[1]);
@@ -53,10 +56,17 @@ public class CommunicateWithServer implements Runnable
                     checkLogin(command, login);
                     break;
                 
-//                case USERNAME:
-//                    clientMenu = new ClientMenu(command[1], this);
-//                    clientMenu.menu();
-//                    break;
+                case SEND_PRODUCT:
+                    addProduct(command);
+                    break;
+                
+                case SEND_CATEGORY:
+                    addCategory(command);
+                    break;
+                
+                case SEND_DESIRE:
+                    addDesire(command);
+                    break;
                     
                 case SIMPLETEXT:
                     System.out.println((command.getArray().length == 1) ? "" : command.getArray()[1]);
@@ -69,14 +79,22 @@ public class CommunicateWithServer implements Runnable
         }
     }
 
-    private void checkLogin(Command command, LoginAttempt login) 
+    private void checkLogin(final Command command, LoginAttempt login) 
     {
         switch (login)
         {
             case SUCCESS:
                 System.out.println("\n::: You are now logged in! :::\n");
-                clientMenu = new ClientMenu(command.getArray()[2], this);
-                clientMenu.menu();
+                clientMenu = new ClientMenu(command.getArray()[2], cws);
+                new Thread()
+                {
+                    @Override
+                    public void run()
+                    {
+                        clientMenu.menu();
+                    }
+                }.start();
+                
                 break;
 
             case ALREADY_LOGGED:
@@ -95,5 +113,29 @@ public class CommunicateWithServer implements Runnable
                 client.loginAttempt();
                 break;
         }
+    }
+
+    private void addProduct(Command command)
+    {
+        clientMenu.getProductList().add(new Product(
+                Integer.parseInt(command.getArray()[1]), 
+                Integer.parseInt(command.getArray()[2]),
+                Integer.parseInt(command.getArray()[3]), 
+                Integer.parseInt(command.getArray()[4]), 
+                Integer.parseInt(command.getArray()[5]),
+                Double.parseDouble(command.getArray()[6]), 
+                command.getArray()[7], command.getArray()[8]));
+    }
+
+    private void addCategory(Command command)
+    {
+        clientMenu.getCategoryList().add(new Category(
+                Integer.parseInt(command.getArray()[1]), 
+                command.getArray()[2], command.getArray()[3]));
+    }
+
+    private void addDesire(Command command)
+    {
+        clientMenu.getDesireList().add(Integer.parseInt(command.getArray()[1]));
     }
 }

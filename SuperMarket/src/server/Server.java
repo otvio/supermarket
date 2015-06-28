@@ -7,6 +7,7 @@ import java.net.ServerSocket;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Scanner;
+import supermarket.entities.Category;
 import supermarket.entities.Product;
 
 public class Server 
@@ -71,7 +72,7 @@ public class Server
         }
     }
 	
-    public List<Product> BringList()
+    public static List<Product> BringList()
     {
         List<Product> list = new ArrayList<>();
         String line;
@@ -90,6 +91,33 @@ public class Server
                 list.add(new Product(Integer.parseInt(products[0]), Integer.parseInt(products[1]), Integer.parseInt(products[2]), 
                     Integer.parseInt(products[3]), Integer.parseInt(products[4]), Double.parseDouble(products[5]), products[6],
                     products[7]));
+            }
+        }
+        catch(Exception e)
+        {
+            System.out.println("Something is wrong :(");
+        }
+        
+        return list;
+    }
+    
+    public static List<Category> BringCategoryList()
+    {
+        List<Category> list = new ArrayList<>();
+        String line;
+        BufferedReader buffreader;
+        
+        try
+        {
+            buffreader = new BufferedReader(new FileReader(CATEGORIES_FILE));
+            
+            while(buffreader.ready())
+            {
+                line = buffreader.readLine();
+            
+                String[] products = line.split(",");
+                
+                list.add(new Category(Integer.parseInt(products[0]), products[1], products[2]));
             }
         }
         catch(Exception e)
