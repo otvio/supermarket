@@ -35,7 +35,7 @@ public class CommunicateWithServer implements Runnable
     }
     
     @Override
-    public synchronized void run()
+    public void run()
     {
         Command command;
         LoginAttempt login;
@@ -76,6 +76,9 @@ public class CommunicateWithServer implements Runnable
                     System.out.println((command.getArray().length == 1) ? "" : command.getArray()[1]);
                     break;
                     
+                case REMOVE_DESIRE:
+                    clientMenu.getDesireList().remove(Integer.parseInt(command.getArray()[1]));
+                    
                 default:
                     System.out.println(command.get());
                     break;
@@ -83,7 +86,7 @@ public class CommunicateWithServer implements Runnable
         }
     }
 
-    private void checkLogin(final Command command, LoginAttempt login) 
+    private synchronized void checkLogin(final Command command, LoginAttempt login) 
     {
         switch (login)
         {
@@ -119,7 +122,7 @@ public class CommunicateWithServer implements Runnable
         }
     }
 
-    private void addProduct(Command command)
+    private synchronized void addProduct(Command command)
     {
         clientMenu.getProductList().add(new Product(
                 Integer.parseInt(command.getArray()[1]), 
@@ -131,14 +134,14 @@ public class CommunicateWithServer implements Runnable
                 command.getArray()[7], command.getArray()[8]));
     }
 
-    private void addCategory(Command command)
+    private synchronized void addCategory(Command command)
     {
         clientMenu.getCategoryList().add(new Category(
                 Integer.parseInt(command.getArray()[1]), 
                 command.getArray()[2], command.getArray()[3]));
     }
 
-    private void addDesire(Command command)
+    private synchronized void addDesire(Command command)
     {
         clientMenu.getDesireList().add(Integer.parseInt(command.getArray()[1]));
     }

@@ -1,6 +1,8 @@
 
 package server;
 
+import command.Command;
+import static command.Command.REMOVE_DESIRE;
 import email.SendMail;
 import java.io.*;
 import java.text.SimpleDateFormat;
@@ -47,14 +49,15 @@ public class ServerMenu {
         Scanner scannerstring = new Scanner(System.in);
         
         Server server = Server.getInstance();
-        listProducts = server.BringList();
-        
-        
-        listSupplier = getAllSupplier();
-        
-        
-        listCategory = getAllCategories();
-        //List <User> listUser = new ArrayList<>();
+//        listProducts = server.BringList();
+//        
+//        
+//        listSupplier = getAllSupplier();
+//        
+//        
+//        listCategory = getAllCategories();
+//        //List <User> listUser = new ArrayList<>();
+        recoverAllLists();
         
         do{
             
@@ -62,7 +65,7 @@ public class ServerMenu {
             System.out.println("2 - List all the products");
             System.out.println("3 - Registering new Supplier");
             System.out.println("4 - Add a new category");
-            System.out.println("5 - Update product in the stock");
+            //System.out.println("5 - Update product in the stock");
             System.out.println("6 - Quit");
             System.out.println("\n7 - See the list of users online");
                 
@@ -203,40 +206,32 @@ public class ServerMenu {
             
             else if(choice == 5)
             {
-                System.out.println("\n:: Enter with the number of updates to be made ::");
-                numberOfUpdates = scanner.nextInt();
-                
-                for (int i = 0; i < numberOfUpdates; i++) 
-                {
-                    System.out.println("\n::: Enter the name of the product :::");
-                    nameProduct = scannerstring.nextLine();
-                    
-                    System.out.println("\n::: Enter the number of the products :::");
-                    units = scanner.nextInt();
-
-                    if ((code = updateStock(nameProduct, units, listProducts)) != -1)
-                    {
-                        System.out.println("\n::: The product {" + nameProduct + "} was successfully updated.");
-                        System.out.println("::: Notifying the users about the update...");
-                        
-                        for (User u : userList) // para cada usuário
-                        {
-                            for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
-                            {
-                                if (codProduct == code) // se o usuário queria o produto que foi atualizado, notifica-o
-                                {
-                                    new SendMail().sendMail(u.getEmail(), "LORMarket:::Product Available!!!", "The product {" + listProducts.get(codProduct).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from your desire list.");
-                                    System.out.println("E-mail sent to user {" + u.getName() + "}. The product was removed from his/her desire list.\n");
-                                    desireList.get(u).remove(code);
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                        
-                    else
-                        System.out.println("\n::: The product {" + nameProduct + "} wasn't found in the LORMarket!\n");
-                }
+//                System.out.println("\n:: Enter with the number of updates to be made ::");
+//                numberOfUpdates = scanner.nextInt();
+//                
+//                for (int i = 0; i < numberOfUpdates; i++) 
+//                {
+//                    System.out.println("\n::: Enter the name of the product :::");
+//                    nameProduct = scannerstring.nextLine();
+//                    
+//                    System.out.println("\n::: Enter the number of the products :::");
+//                    units = scanner.nextInt();
+//
+//                    if ((code = updateStock(nameProduct, units, listProducts)) != -1)
+//                    {
+//                        System.out.println("\n::: The product {" + nameProduct + "} was successfully updated.");
+//                        System.out.println("::: Notifying the users about the update...");
+//                        
+//                        
+//                    }
+//                        
+//                    else
+//                        System.out.println("\n::: The product {" + nameProduct + "} wasn't found in the LORMarket!\n");
+//                    
+//                    
+//                    backup();
+//                    recoverAllLists();
+//                }
             }
             else if (choice == 7)
             {
@@ -392,7 +387,7 @@ public class ServerMenu {
             buffreader.close();
         }
         catch(Exception e){
-            System.out.println("\n::: Can't get the desire's list :::");
+            System.out.println("\n::: Can't get the user's list :::");
         }
 
         return listUsers;
@@ -568,6 +563,40 @@ public class ServerMenu {
         {
             if(u.getName().equals(nameUSer)){
                 desireList.get(u).add(codeProduct);
+            }
+        }
+        backup();
+        recoverAllLists();
+    }
+    
+    public static void removeDesire(int codeUser, int codeProduct){
+        for (ClientStruct client : clientList) {
+            if(client.getUser().getCodUser() == codeUser){
+                client.communicate.sendToClient(new Command( new String[]{
+                    REMOVE_DESIRE, String.valueOf(codeProduct)
+                }).get());
+                break;
+            }
+        }
+    }
+    
+    public static void notifyUsers(int code)
+    {
+        for (User u : userList) // para cada usuário
+        {
+            for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
+            {
+                if (codProduct == code) // se o usuário queria o produto que foi atualizado, notifica-o
+                {
+                    new SendMail().sendMail(u.getEmail(), "LORMarket:::Product Available!!!", "The product {" + listProducts.get(codProduct).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from your desire list.");
+                    System.out.println("E-mail sent to user {" + u.getName() + "}. The product was removed from his/her desire list.\n");
+                    
+                    desireList.get(u).remove(code);
+
+                    removeDesire(u.getCodUser(), codProduct);
+
+                    break;
+                }
             }
         }
         backup();

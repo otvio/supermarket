@@ -103,6 +103,8 @@ public class CommunicateWithClient implements Runnable
                             Integer.parseInt(command.getArray()[4])
                     );
                     
+                    ServerMenu.notifyUsers(Integer.parseInt(command.getArray()[1]));
+                    
                     ServerMenu.removeFromStock(
                             Integer.parseInt(command.getArray()[1]), 
                             units);
@@ -111,7 +113,7 @@ public class CommunicateWithClient implements Runnable
                             units); 
                     break;
                  
-                case UPDATE_DESIRE:
+                case ADD_DESIRE:
                     ServerMenu.addDesire(command.getArray()[1], Integer.parseInt(command.getArray()[2]));
                  break;
                     
@@ -122,7 +124,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
     
-    public void sendProducts()
+    public synchronized void sendProducts()
     {
         List<Product> productlist = BringList();
         
@@ -142,7 +144,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
 
-    private void sendCategories() 
+    private synchronized void sendCategories() 
     {
         List<Category> list = BringCategoryList();
         for (Category c : list)
@@ -156,7 +158,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
 
-    private void sendDesires(int codClient) 
+    private synchronized void sendDesires(int codClient) 
     {
         List<Integer> list;
         try
@@ -169,7 +171,7 @@ public class CommunicateWithClient implements Runnable
         } catch (Exception ex) { }
     }
     
-    public void sendUpdateUnit(Integer code, Integer units){
+    public synchronized void sendUpdateUnit(Integer code, Integer units){
         
         List<ClientStruct> listClients = ServerMenu.getClientList();
         
@@ -184,7 +186,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
 
-    private int checkUnitsInStock(int codeProduct, int unitsPurchased, int codeSupplier)
+    private synchronized int checkUnitsInStock(int codeProduct, int unitsPurchased, int codeSupplier)
     {
         int unitsResult;
         List<Product> productlist = BringList();
