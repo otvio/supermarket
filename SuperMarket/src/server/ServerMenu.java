@@ -17,7 +17,7 @@ public class ServerMenu {
     private static List <Product> listProducts = new ArrayList<>();
     private static List <Supplier> listSupplier = new ArrayList<>();
     private static List<Category> categoryList = getAllCategories();
-    private Map<User, List<Integer>> desireList = getAllDesireList(userList);
+    private static Map<User, List<Integer>> desireList = getAllDesireList(userList);
     
       private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
 
@@ -263,7 +263,7 @@ public class ServerMenu {
         return (-1);
     }
     
-    public Map<User, List<Integer>> getAllDesireList(List<User> userList)
+    public static Map<User, List<Integer>> getAllDesireList(List<User> userList)
     {
         Map<User, List<Integer>> desirelist = new HashMap<>();
         String line;
@@ -296,7 +296,37 @@ public class ServerMenu {
 
         return desirelist;
     }
- 
+    
+    public static void addFileAllDesireList(){
+        File fp;
+        FileWriter fw;
+        PrintWriter pw;
+        
+        try{
+            fp = new File(DESIRE_FILE);
+            fw = new FileWriter(fp, true);
+            pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+
+            if(fp.exists() == false)
+            { // caso o arquivo nao exista, cria um arquivo
+                fp.createNewFile();
+            }
+        
+            for (User u : userList) // para cada usuário
+            {
+                for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
+                {
+                    pw.print(u.getCodUser());
+                    pw.print(",");
+                    pw.println(codProduct);
+                }
+            }
+            pw.close();
+            fw.close();
+        }
+        
+        catch(Exception e){}
+    }
     public static List <ClientStruct> getDesireList(int codeProduct){
         
         List <ClientStruct> desireList = new ArrayList<>();
@@ -471,8 +501,6 @@ public class ServerMenu {
         
         backup();
         recoverAllLists();
-        System.out.println("hahahhahahahahahhahah");
-        
     }
     
     public static void backup(){
@@ -482,6 +510,7 @@ public class ServerMenu {
         new File(CATEGORIES_FILE).delete();
         new File(USERS_FILE).delete();
         new File(SUPPLIERS_FILE).delete();
+        new File(DESIRE_FILE).delete();
             
         for(Product product : listProducts){
             product.addFileProduct();
@@ -496,13 +525,7 @@ public class ServerMenu {
             user.addFileUser();
         }
         
-        if(listSale == null) System.out.println("listSale é nulo");
-        else System.out.println("é nulo não rapa");
-        
-        for(Sale sale : listSale){
-            sale.addFileSale();
-            System.out.println("codeProduct : " + sale.getCodProduct() + "\ncodeSale" + sale.getCodSale());
-        }
+        addFileAllDesireList();
     }
     
     public static void recoverAllLists(){
@@ -511,6 +534,7 @@ public class ServerMenu {
         listSupplier = getAllSupplier();
         userList = getAllTheUser();
         listSale = getAllSales();
+        desireList = getAllDesireList(userList);
     }
     
     public static void addSale(String nameUser, int codeProduct, int quantityProducts, Calendar date){
@@ -527,5 +551,17 @@ public class ServerMenu {
 
     public static List<ClientStruct> getClientList(){
         return clientList;
+    }
+    
+    public static void addDesire(String nameUSer, int codeProduct){
+        
+        for (User u : userList) // para cada usuário
+        {
+            if(u.getName().equals(nameUSer)){
+                desireList.get(u).add(codeProduct);
+            }
+        }
+        backup();
+        recoverAllLists();
     }
 }

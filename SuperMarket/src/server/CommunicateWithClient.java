@@ -96,6 +96,10 @@ public class CommunicateWithClient implements Runnable
                     ServerMenu.removeFromStock(Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]));
                     sendUpdateUnit(Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]));            
                     break;
+                 
+                case UPDATE_DESIRE:
+                    ServerMenu.addDesire(command.getArray()[1], Integer.parseInt(command.getArray()[2]));
+                 break;
                     
                 default:
                     System.out.println(command.get());
