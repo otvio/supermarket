@@ -48,7 +48,7 @@ public class ClientMenu
                     break;
 
                 case "2":
-                    desireList();
+                    showDesireList();
                     break;
                    
                 case "4":
@@ -132,38 +132,56 @@ public class ClientMenu
                 }
             });
             
-            if(units > productList.get(productnumber).getStockUnits()){
+            if(units > productList.get(productnumber).getStockUnits())
+            {
+                cases = input.nextLine().toUpperCase();
                 do{
                     System.out.println("We have only (" + productList.get(productnumber).getStockUnits() + ") units of this product.");
                     System.out.println("Do you want to be informed when we have more units? (Y)-Yes , (N)-No ");
                 
                     cases = input.nextLine().toUpperCase();
+                    System.out.println(cases);
                 }while(!cases.equals("Y") && !cases.equals("N"));
                 
                 communicateWithServer.sendToServer(new Command(new String[]{
-                                    PURCHASE, String.valueOf(productList.get(productnumber).getCodProduct()),
-                                    String.valueOf(productList.get(productnumber).getStockUnits()), nameClient
+                    PURCHASE, 
+                    String.valueOf(productList.get(productnumber).getCodProduct()),
+                    String.valueOf(productList.get(productnumber).getStockUnits()), 
+                    nameClient,
+                    String.valueOf(productList.get(productnumber).getCodSupplier())
                 }).get());
                 
                 if(cases.equals("Y"))
                 {
-                    desireList.add(productList.get(productnumber).getCodProduct());
-                    communicateWithServer.sendToServer(new Command(new String[]{
-                        UPDATE_DESIRE, nameClient, String.valueOf(productList.get(productnumber).getCodProduct()),
-                        
-                    }).get());
+                    if(desireList.indexOf(productList.get(productnumber).getCodProduct()) == -1){
+
+                        desireList.add(productList.get(productnumber).getCodProduct());
+                        communicateWithServer.sendToServer(new Command(new String[]{
+                            UPDATE_DESIRE, nameClient, 
+                            String.valueOf(productList.get(productnumber).getCodProduct()),
+                        }).get());
+                    }
+                    else{
+                        System.out.println("This product is already in your list");
+                    }
+                }
+                else{
+                    System.out.println("hahahah");
                 }
             }
-            
             else if(productList.get(productnumber).getStockUnits() > 0){
                 communicateWithServer.sendToServer(new Command(new String[]{
-                                    PURCHASE, String.valueOf(productList.get(productnumber).getCodProduct()), String.valueOf(units), nameClient
+                    PURCHASE, 
+                    String.valueOf(productList.get(productnumber).getCodProduct()), 
+                    String.valueOf(units), 
+                    nameClient,
+                    String.valueOf(productList.get(productnumber).getCodSupplier())
                 }).get());
             }
             else
             {
                 System.out.println("The product isn't available. =(");
-                //cases = "=(";
+                cases = "=(";
                 do
                 {
                     System.out.println("Do you want to be informed when the product be available? (Y)-Yes , (N)-No ");
@@ -173,11 +191,17 @@ public class ClientMenu
                  
                 if(cases.equals("Y"))
                 {
-                    desireList.add(productList.get(productnumber).getCodProduct());
-                    communicateWithServer.sendToServer(new Command(new String[]{
-                        UPDATE_DESIRE, nameClient, String.valueOf(productList.get(productnumber).getCodProduct()),
+                    if(desireList.indexOf(productList.get(productnumber).getCodProduct()) == -1){
+
+                        desireList.add(productList.get(productnumber).getCodProduct());
+                        communicateWithServer.sendToServer(new Command(new String[]{
+                            UPDATE_DESIRE, nameClient, String.valueOf(productList.get(productnumber).getCodProduct()),
                         
-                    }).get());
+                        }).get());
+                    }
+                    else{
+                        System.out.println("This product is already in your list");
+                    }
                 }
             }             
         }   
@@ -188,14 +212,27 @@ public class ClientMenu
         for(Product product : productList){
             if(product.getCodProduct() == code){
                 System.out.println("axoooooooooooo");
-                product.setStockUnits(product.getStockUnits() - units);
+                product.setStockUnits(units);
             }
         }
     }
     
-    public void desireList()
+    public void showDesireList()
     {
-    
+        for (Integer code : desireList) {
+            for(Product product : productList){
+                if(product.getCodProduct() == code){
+                    System.out.println("Product : " + product.getNameProduct() + "\nPrice :" + product.getUnitPrice());
+                    code = product.getCodCategory();
+                }
+            }
+            for(Category category : categoryList){
+                if(code == category.getCodCategory()){
+                    System.out.println("Description : " + category.getDescription());
+                    break;
+                }
+            }
+        }
     }
     public void placeOrder()
     {

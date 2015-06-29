@@ -23,6 +23,9 @@ public class Server
     public static final String SUPPLIERS_FILE = "suppliers.csv";
     public static final String CATEGORIES_FILE = "categories.csv";
     
+    //define para a quantidade mínima de produtos (se um produto tiver menos, pede pro supplier)
+    public static final int MIN_QUANTITY = 10;
+    
     private static Scanner scanner;
     private static ServerSocket serverSocket;
     private static List<ClientStruct> clientList;

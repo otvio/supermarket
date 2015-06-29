@@ -7,7 +7,6 @@ import command.*;
 import static command.Command.*;
 
 import java.io.PrintStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
@@ -45,6 +44,7 @@ public class CommunicateWithClient implements Runnable
     @Override
     public void run()
     {
+        int units;
         Login login;
         Command command;
         LoginAttempt attempt;
@@ -92,9 +92,23 @@ public class CommunicateWithClient implements Runnable
                     break;
                     
                 case PURCHASE:
-                    ServerMenu.addSale(command.getArray()[3], Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]), Calendar.getInstance());
-                    ServerMenu.removeFromStock(Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]));
-                    sendUpdateUnit(Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]));            
+                    ServerMenu.addSale(command.getArray()[3], 
+                            Integer.parseInt(command.getArray()[1]), 
+                            Integer.parseInt(command.getArray()[2]), 
+                            Calendar.getInstance());
+                    
+                    units = checkUnitsInStock(
+                            Integer.parseInt(command.getArray()[1]),
+                            Integer.parseInt(command.getArray()[2]),
+                            Integer.parseInt(command.getArray()[4])
+                    );
+                    
+                    ServerMenu.removeFromStock(
+                            Integer.parseInt(command.getArray()[1]), 
+                            units);
+                    
+                    sendUpdateUnit(Integer.parseInt(command.getArray()[1]), 
+                            units); 
                     break;
                  
                 case UPDATE_DESIRE:
@@ -173,4 +187,19 @@ public class CommunicateWithClient implements Runnable
         }
         
         System.out.println("finalizando for para updatar os clientes...");
-    }}
+    }
+
+    private int checkUnitsInStock(int codeProduct, int unitsPurchased, int codeSupplier)
+    {
+        int unitsResult;
+        List<Product> productlist = BringList();
+        List<Supplier> supplierlist = ServerMenu.getAllSupplier();
+        
+        unitsResult = productlist.get(codeProduct).getStockUnits() - unitsPurchased;
+        
+        if (unitsResult < MIN_QUANTITY)
+            unitsResult += supplierlist.get(codeSupplier).getMoreProducts(codeProduct);
+
+        return unitsResult;
+    }
+}

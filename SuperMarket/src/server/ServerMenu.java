@@ -175,6 +175,9 @@ public class ServerMenu {
                         return o1.getCodSupplier() < o2.getCodSupplier() ? -1 : 1;
                     }
                 });
+                
+                backup();
+                recoverAllLists();
             }
             
             else if (choice == 4)
@@ -395,7 +398,13 @@ public class ServerMenu {
         return listUsers;
     }
     
-    public static List<Supplier> getAllSupplier(){
+    public static List<Supplier> getAllSupplier()
+    {
+        
+        if (ServerMenu.listSupplier != null && !ServerMenu.listSupplier.isEmpty())
+        {
+            return (ServerMenu.listSupplier);
+        }
         
         List<Supplier> listSupplier = new ArrayList<>();
         String line;
@@ -493,9 +502,9 @@ public class ServerMenu {
     public static void removeFromStock(int code, int units){
         listProducts = Server.BringList();
         
-        for (int i = 0; i < listProducts.size(); i++) {
-            if (listProducts.get(i).getCodProduct() == code) {
-                listProducts.get(i).setStockUnits(listProducts.get(i).getStockUnits() - units);
+        for (Product listProduct : listProducts) {
+            if (listProduct.getCodProduct() == code) {
+                listProduct.setStockUnits(units);
             }
         }
         
