@@ -4,8 +4,8 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import static server.Server.CATEGORIES_FILE;
-import static server.Server.PRODUCTS_FILE;
 
 
 public class Category 

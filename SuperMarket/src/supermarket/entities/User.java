@@ -4,9 +4,10 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Objects;
+import static server.Server.USERS_FILE;
 
-
-public class User 
+public class User
 {
     private int codUser;
     private String name;   
@@ -101,7 +102,7 @@ public class User
     {
         try
         {
-            File fp = new File("users.csv");
+            File fp = new File(USERS_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw);    // cria um PrintWriter que irá escrever no arquivo
         
@@ -140,6 +141,41 @@ public class User
     public String toString() 
     {
         return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (obj == null) 
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass()) 
+        {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.name, other.name)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.telephone, other.telephone)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.ID, other.ID)) 
+        {
+            return false;
+        }
+        return Objects.equals(this.password, other.password);
     }
     
     

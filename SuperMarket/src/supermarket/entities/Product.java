@@ -1,22 +1,14 @@
 
 package supermarket.entities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 import static server.Server.PRODUCTS_FILE;
 
-public class Product 
+public class Product
 {
-    public static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
     private int codSupplier;
     private int codCategory;
@@ -25,7 +17,6 @@ public class Product
     private double unitPrice;
     private String nameProduct;
     private Calendar validityProduct;
-
     
     public Product(int codProduct, int codSupplier, int codCategory, 
             int stockUnits, int orderedUnits, double unitPrice, 
@@ -49,9 +40,11 @@ public class Product
         );
     }
     
-    public void addFileProduct(){
-        
-        try{
+	
+	public void addFileProduct()
+	{
+        try
+		{
             File fp = new File(PRODUCTS_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
@@ -84,8 +77,8 @@ public class Product
             pw.close();
             fw.close();
         }
-        
-        catch(Exception e){
+        catch(Exception e)
+		{
             System.out.println("Can't store in the file :(");
         }
     }
@@ -158,5 +151,29 @@ public class Product
     public void setOrderedUnits(int orderedUnits) 
     {
         this.orderedUnits = orderedUnits;
+    }
+	
+    public void printProduct(Category c)
+    {
+        System.out.println("//--------------------------------------"); 
+        System.out.println("||Product Code: " + (this.getCodProduct()));
+        System.out.println("||Product name : " + this.getNameProduct());
+        System.out.println("||Price: " + this.getUnitPrice());
+        System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
+        
+        if (c != null)
+            System.out.println("||Category: " + c.getNameCategory());
+        
+        if (this.getStockUnits() > 0)
+            System.out.println("||Units: " + this.getStockUnits());    
+        else
+            System.out.println("||Product Unavailable!");
+        
+        System.out.println("\\\\--------------------------------------\n\n"); 
+    }
+
+    public String getValidity()
+    {
+        return dateFormat.format(validityProduct.getTime());
     }
 }
