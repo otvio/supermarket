@@ -177,16 +177,11 @@ public class CommunicateWithClient implements Runnable
             System.out.println(client.getUser().toString());
         }
         
-        System.out.println("iniciando for para updatar os clientes...");
-        
         for(ClientStruct client : listClients){
-            System.out.println("dentro do for para updatar os clientes...");
             client.communicate.sendToClient(new Command(new String[]{
                 SEND_UPDATE, String.valueOf(code), String.valueOf(units)
             }).get());
         }
-        
-        System.out.println("finalizando for para updatar os clientes...");
     }
 
     private int checkUnitsInStock(int codeProduct, int unitsPurchased, int codeSupplier)

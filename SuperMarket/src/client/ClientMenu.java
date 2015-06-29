@@ -165,9 +165,6 @@ public class ClientMenu
                         System.out.println("This product is already in your list");
                     }
                 }
-                else{
-                    System.out.println("hahahah");
-                }
             }
             else if(productList.get(productnumber).getStockUnits() > 0){
                 communicateWithServer.sendToServer(new Command(new String[]{
@@ -208,10 +205,8 @@ public class ClientMenu
     }
     
     public void updateProducts(int code, int units){
-        System.out.println("entrou na funcao updateProducts");
         for(Product product : productList){
             if(product.getCodProduct() == code){
-                System.out.println("axoooooooooooo");
                 product.setStockUnits(units);
             }
         }

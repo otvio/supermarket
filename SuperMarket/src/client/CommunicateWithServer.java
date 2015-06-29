@@ -69,7 +69,6 @@ public class CommunicateWithServer implements Runnable
                     break;
                     
                 case SEND_UPDATE:
-                    System.out.println("AAAAAAAAAAA " + SEND_UPDATE);
                     clientMenu.updateProducts(Integer.parseInt(command.getArray()[1]), Integer.parseInt(command.getArray()[2]));
                     break;
                     
