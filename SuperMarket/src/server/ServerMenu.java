@@ -3,8 +3,8 @@ package server;
 
 import java.io.*;
 import java.util.*;
-import email.SendMail;
 import command.Command;
+import extras.email.SendMail;
 import static server.Server.*;
 import supermarket.entities.*;
 import static command.Command.*;
@@ -15,9 +15,9 @@ public class ServerMenu
     private static List<ClientStruct> clientList;
     private static List<Sale> listSale = getAllSales();
     private static List<User> userList = getAllTheUser();
-    private static List <Product> listProducts = new ArrayList<>();
-    private static List<Category> listCategory = new ArrayList<>();
-    private static List <Supplier> listSupplier = new ArrayList<>();
+    private static List <Product> listProducts = BringList();
+    private static List<Category> listCategory = getAllCategories();
+    private static List <Supplier> listSupplier = getAllSupplier();
     private static List<Category> categoryList = getAllCategories();
     private static Map<User, List<Integer>> desireList = getAllDesireList(userList);
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
@@ -162,7 +162,7 @@ public class ServerMenu
                     }
                 });
                 
-                backup(listProducts, listCategory, listSupplier, userList, desireList);
+                backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
                 recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
             }
             
@@ -296,7 +296,7 @@ public class ServerMenu
             }
         }
         
-        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
     }
     
@@ -318,6 +318,18 @@ public class ServerMenu
         return clientList;
     }
     
+    public static List<Sale> getSalesList(){
+        return listSale;
+    }
+    
+    public static List<User> getUsersList(){
+        return userList;
+    }
+    
+    public static List<Product> getProductsList(){
+        return listProducts;
+    }
+    
     public static void addDesire(String nameUSer, int codeProduct){
         
         for (User u : userList) // para cada usuário
@@ -327,7 +339,7 @@ public class ServerMenu
             }
         }
         
-        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
     }
     
@@ -373,7 +385,7 @@ public class ServerMenu
             }
         }
         
-        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
     }
 }

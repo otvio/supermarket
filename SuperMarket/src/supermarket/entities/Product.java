@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import static server.Server.PRODUCTS_FILE;
+import static supermarket.SuperMarket.printAdapted;
 
 public class Product
 {
@@ -152,9 +153,9 @@ public class Product
     public void printProduct(Category c)
     {
         System.out.println("//--------------------------------------\\\\"); 
-        printAdapted("Product Code: " + (this.getCodProduct()));
+        printAdapted("Product code: " + (this.getCodProduct()));
         printAdapted("Product name: " + this.getNameProduct());
-        printAdapted("Price: " + this.getUnitPrice());
+        printAdapted("Unit price: " + this.getUnitPrice());
         printAdapted("Validity: " + dateFormat.format(this.validityProduct.getTime()));
         
         if (c != null)
@@ -167,40 +168,9 @@ public class Product
         
         System.out.println("\\\\--------------------------------------//\n\n"); 
     }
-    
-    public void printAdapted(String str) // 42 caracteres
-    {
-        // º início parametros... \\
-        int maxLineSize = 42;
-        String border = "||";
-        String fill = " ";
-        String continuation = "...";
-        PrintStream output = new PrintStream(System.out);
-        // fim parâmetros      º \\       
-        
-        if (str.length() == 0) return ;
-        
-        if ((str.length() > 0) && ((str.length() + 2 * border.length()) <= maxLineSize))
-        {
-            output.print(border + str);
-            int diff = maxLineSize - 2 * border.length() - str.length();
-            
-            for (int i = 0; i < diff; i++)
-                output.print(fill);
-            
-            output.println(border);
-        }
-        else
-            output.println(
-                    border +
-                    str.substring(0, maxLineSize - 2 * border.length() - (continuation).length()) +
-                    continuation +
-                    border
-            );
-    }
-    
-    //marcos.cesar.camargo@usp.br
 
+    
+    
     public String getValidity()
     {
         return dateFormat.format(validityProduct.getTime());

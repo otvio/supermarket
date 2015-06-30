@@ -1,13 +1,13 @@
 
 package client;
 
-import login.LoginAttempt;
 import command.*;
+import login.LoginAttempt;
 import static command.Command.*;
 
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.io.PrintStream;
 
 public class Client
 {
@@ -19,9 +19,11 @@ public class Client
     {
         // tentando se conectar ao servidor
         socket = new Socket("localhost", 12345);
-        System.out.println("::: Client Connected! :)");
-        System.out.println("::: Awaiting the server... ");
-
+        System.out.println("::::::::::::::::::::::::::::::");
+        System.out.println(":::  Client Connected! :)  :::");
+        System.out.println("::: Awaiting the server... :::");
+        System.out.println("::::::::::::::::::::::::::::::\n\n");
+        
         // criando a thread de comunicação com o servidor
         communicate = new CommunicateWithServer(this,
                         new PrintStream(socket.getOutputStream()), 

@@ -1,8 +1,7 @@
 
 package server;
 
-import login.Login;
-import login.LoginAttempt;
+import login.*;
 import command.*;
 import static command.Command.*;
 

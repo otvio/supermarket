@@ -75,7 +75,7 @@ public class Server
 
     public static void backup(List<Product> listProducts, 
             List<Category> listCategory, List<Supplier> listSupplier,
-            List<User> userList, Map<User, List<Integer>> desirelist)
+            List<User> userList, List<Sale> listSale, Map<User, List<Integer>> desirelist)
     {
         new File(SALES_FILE).delete();
         new File(USERS_FILE).delete();
@@ -95,6 +95,9 @@ public class Server
         }
         for(User user : userList){
             user.addFileUser();
+        }
+        for(Sale s : listSale){
+            s.addFileSale();
         }
         
         addFileAllDesireList(userList, desirelist);

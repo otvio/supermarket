@@ -3,12 +3,12 @@ package supermarket.entities;
 
 import java.io.File;
 import java.io.FileWriter;
+import java.util.Calendar;
 import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.GregorianCalendar;
-import static server.Server.PRODUCTS_FILE;
 import static server.Server.SALES_FILE;
+import static supermarket.SuperMarket.printAdapted;
 
 public class Sale 
 {
@@ -118,5 +118,18 @@ public class Sale
     public void setDateSale(Calendar dateSale) 
     {
         this.dateSale = dateSale;
+    }
+    
+    public String toString(User user, Product product)
+    {
+        String result = "//--------------------------------------\\\\" + "\n";
+        printAdapted("Sale code: " + String.valueOf(this.codSale), result);
+        printAdapted("Sale date: " + dateFormat.format(this.dateSale.getTime()), result);
+        printAdapted("User: " + user.getName(), result);
+        printAdapted("Product: " + product.getNameProduct(), result);
+        printAdapted("QuantityProducts: " + String.valueOf(this.quantityProducts), result);
+        result += "\\\\--------------------------------------//" + "\n\n";
+        
+        return (result);
     }
 }

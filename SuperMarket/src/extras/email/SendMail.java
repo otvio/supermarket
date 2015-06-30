@@ -1,5 +1,5 @@
 
-package email;
+package extras.email;
 
 import java.util.Properties;  
 import javax.mail.Message;  
