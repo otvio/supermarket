@@ -4,10 +4,10 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Objects;
 import static server.Server.USERS_FILE;
 
-
-public class User 
+public class User
 {
     private int codUser;
     private String name;   
@@ -106,11 +106,8 @@ public class User
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw);    // cria um PrintWriter que irá escrever no arquivo
         
-            
             if(fp.exists() == false) // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
-            
-            
             
             // Os comandos abaixo salvam os dados no arquivo, após cada dado adicionado é acrescentada uma virgula para separa-los.
             pw.print(this.getCodUser());
@@ -125,7 +122,7 @@ public class User
             pw.print(",");
             pw.print(this.getID());
             pw.print(",");
-            pw.print(this.getPassword());
+            pw.println(this.getPassword());
             
             pw.close();
             fw.close();
@@ -141,6 +138,41 @@ public class User
     public String toString() 
     {
         return "User{" + "codUser=" + codUser + ", name=" + name + ", address=" + address + ", email=" + email + ", telephone=" + telephone + ", ID=" + ID + ", password=" + password + '}';
+    }
+
+    @Override
+    public boolean equals(Object obj) 
+    {
+        if (obj == null) 
+        {
+            return false;
+        }
+        if (getClass() != obj.getClass()) 
+        {
+            return false;
+        }
+        final User other = (User) obj;
+        if (!Objects.equals(this.name, other.name)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.address, other.address)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.telephone, other.telephone)) 
+        {
+            return false;
+        }
+        if (!Objects.equals(this.ID, other.ID)) 
+        {
+            return false;
+        }
+        return Objects.equals(this.password, other.password);
     }
     
     

@@ -1,63 +1,62 @@
 
 package server;
 
-import email.SendMail;
 import java.io.*;
 import java.util.*;
+import email.SendMail;
+import command.Command;
 import static server.Server.*;
 import supermarket.entities.*;
-
+import static command.Command.*;
+import java.text.SimpleDateFormat;
 
 public class ServerMenu 
 {
-    private List<ClientStruct> clientList;
-    private List<User> userList = getAllTheUser();
-    private List<Category> categoryList = getAllCategories();
-    private Map<User, List<Integer>> desireList = getAllDesireList(userList);
-    
-    
+    private static List<ClientStruct> clientList;
+    private static List<Sale> listSale = getAllSales();
+    private static List<User> userList = getAllTheUser();
+    private static List <Product> listProducts = new ArrayList<>();
+    private static List<Category> listCategory = new ArrayList<>();
+    private static List <Supplier> listSupplier = new ArrayList<>();
+    private static List<Category> categoryList = getAllCategories();
+    private static Map<User, List<Integer>> desireList = getAllDesireList(userList);
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
+
     public ServerMenu(List<ClientStruct> clientList)
     {
-        this.clientList = clientList;
+        ServerMenu.clientList = clientList;
     }
     
-    public void showMenu()
+    public void showMenu() throws Exception
     {
-        int choice;
-        String nameProduct;
-        String expirationdate;
-        int units;
+        int units, code, codeCategory, codeSupplier, choice;
+        
         double price;
         
+        String nameProduct, expirationdate, nameSupplier, 
+                nameContact, contacting, nameCategory, descriptionCategory;
+
         Scanner scanner = new Scanner(System.in);
         Scanner scannerstring = new Scanner(System.in);
         
-        Server server = new Server();
-        List <Product> listProducts = new ArrayList<>();
-        listProducts = server.BringList();
+        Server server = Server.getInstance();
+
+        recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         
-        List <Supplier> listSupplier = new ArrayList<>();
-        
-        List <User> listUser = new ArrayList<>();
-        
-        do{
-            
+        do
+        {
             System.out.println("\n1 - Register new products");
             System.out.println("2 - List all the products");
-            System.out.println("3 - Send a notification to the client");
-            System.out.println("4 - Registering new Supplier");
-            System.out.println("5 - Quit");
+            System.out.println("3 - Registering new Supplier");
+            System.out.println("4 - Add a new category");
+            System.out.println("6 - Quit");
+            System.out.println("\n7 - See the list of users online");
                 
             choice = scanner.nextInt();
             
             if(choice == 1){
-                Collections.sort(listProducts, new Comparator<Product>(){
-
-                    @Override
-                    public int compare(Product o1, Product o2) {
-                        return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
-                    }
-                });
+                
+                code = (!listProducts.isEmpty()) ? (listProducts.get(listProducts.size() - 1).getCodProduct()+ 1) : 0;  // Código que será adicionado para o usuário
                 
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
@@ -71,91 +70,66 @@ public class ServerMenu
                 System.out.println("The expiration date:");
                 expirationdate = scannerstring.nextLine();
                 
-                /*
-                public Product(int codProduct, int codSupplier, int codCategory, 
-                int stockUnits, int orderedUnits, double unitPrice, 
-                String nameProduct, String validity) /*/
+                System.out.println("The name of the supplier:");
+                nameSupplier = scannerstring.nextLine();
                 
-                Product product = new Product(/*fazer funçoes para pegar os codigo*/(listProducts.get(listProducts.size() - 1).getCodProduct() + 1), 0, 0, units, units, price, nameProduct, expirationdate);
-                
-                product.addFileProduct();
-            }
-            
-            else if(choice == 2){
-                try{
-                    listProducts = server.BringList();
-                }
-                
-                catch(Exception e){
-                    System.out.println("Can't list all the products!");
-                }
-                
-                System.out.println("\n ::: Show all the Products :: \n");
-                
-                for(Product p : listProducts){
-                    System.out.println(p.getNameProduct() + " - " + p.getUnitPrice() + " - " + p.getStockUnits());
-                }
-            }
-            // percorrer a lista dada pelo método e procurar todos os caras na lista quando atualizar determinado produto
-            else if(choice == 3)
-            {
-                int bef, now, codProduct;
-                
-                //desireList = getAllDesireList(userList);
-                System.out.println("Do you want to update what product?\n");
-                
-                try{
-                    listProducts = server.BringList();
+                System.out.println("The name of the category:");
+                nameCategory = scannerstring.nextLine();
                     
-                    System.out.println("\n ::: Show all the Products :: \n");
-                    
+                codeSupplier = getSupplier(listSupplier, nameSupplier);
+                codeCategory = getCategory(listCategory, nameCategory);
+                
+                if(codeCategory != -1 && codeSupplier != -1){
+                
+                    Product product = new Product(code, codeSupplier, codeCategory, units, units, price, nameProduct, expirationdate);
+                
+                    product.addFileProduct();
+                
                     Collections.sort(listProducts, new Comparator<Product>(){
 
                         @Override
                         public int compare(Product o1, Product o2) {
-                            return (o1.getCodProduct() < o2.getCodProduct() ? -1 : 1);
+                            return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
                         }
                     });
-                    
-                    Collections.sort(categoryList, new Comparator<Category>(){
+                }
+                
+                if(codeCategory == -1){
+                    System.out.println("\n:::The name of the category is invalid, please try another one:::");
+                }
+                if(codeSupplier == -1){
+                    System.out.println("\n:::The name of the supplier is invalid, please try another one:::");
+                }
+            }
+            
+            else if(choice == 2){
+               
+                try{
+                    listProducts = server.BringList();
+                    System.out.println("\n ::: Show all the Products :: \n");
 
+                    Collections.sort(listProducts, new Comparator<Product>()
+                    {
                         @Override
-                        public int compare(Category o1, Category o2) {
+                        public int compare(Product o1, Product o2) 
+                        {
+                            return (o1.getStockUnits() < o2.getStockUnits() ? -1 : 1);
+                        }
+                    });
+
+                    Collections.sort(categoryList, new Comparator<Category>()
+                    {
+                        @Override
+                        public int compare(Category o1, Category o2) 
+                        {
                             return (o1.getCodCategory() < o2.getCodCategory() ? -1 : 1);
                         }
                     });
-                    
-                    for(Product p : listProducts){
+
+                    for(Product p : listProducts)
+                    {
                         System.out.println("Product " + p.getCodProduct() + ". ");
                         p.printProduct(categoryList.get(p.getCodCategory()));
-                    }
-                    
-                    System.out.println("What is the product to be updated?");
-                    codProduct = scanner.nextInt();
-                    
-                    System.out.println("What is the new quantity of the product?");
-                    
-                    bef = listProducts.get(codProduct).getStockUnits();
-                    now = scanner.nextInt();
-                    
-                    listProducts.get(codProduct).setStockUnits(now);
-                    
-                    if (now > bef) 
-                    {
-                        for (User u : userList) {
-
-                            for (Integer i : desireList.get(u)) {
-
-                                if (i == codProduct) {
-
-                                    SendMail sm = new SendMail();
-                                    sm.sendMail(u.getEmail(), "Product Available!!", "The product {" + listProducts.get(codProduct).getNameProduct() + "} was updated.\nCome to LORMarket and check it out!\n\nPS: The product was removed from yours desire list.");
-                                    System.out.println("E-mail sent to user {" + u.getName() + "}. The product was removed from his/her desire list.\n");
-                                    desireList.get(u).remove(i);
-                                    break;
-                                }
-                            }
-                        }
                     }
                 }
                 
@@ -163,77 +137,111 @@ public class ServerMenu
                     System.out.println("Can't list all the products!");
                 }
             }
-            else if(choice == 4){
+            
+            else if(choice == 3)
+            {
+                code = (!listSupplier.isEmpty()) ? (listSupplier.get(listSupplier.size() - 1).getCodSupplier()+ 1) : 0;  // Código que será adicionado para o usuário
                 
-                Collections.sort(listProducts, new Comparator<Product>(){
+                System.out.println("\nEnter with the name of the supplier:");
+                nameSupplier = scannerstring.nextLine();
+                
+                System.out.println("Enter with the name of the nameContact:");
+                nameContact = scannerstring.nextLine();
+                
+                System.out.println("Enter with the name of the contacting:");
+                contacting = scannerstring.nextLine();
+                
+                listSupplier.add(new Supplier(code ,nameSupplier, nameContact, contacting));
+                listSupplier.get(listSupplier.size() - 1).addFileSupplier();
+                
+                Collections.sort(listSupplier, new Comparator<Supplier>(){
 
                     @Override
-                    public int compare(Product o1, Product o2) {
-                        return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
+                    public int compare(Supplier o1, Supplier o2) {
+                        return o1.getCodSupplier() < o2.getCodSupplier() ? -1 : 1;
                     }
                 });
                 
-                System.out.println("\nEnter with the name of the supplier:");
+                backup(listProducts, listCategory, listSupplier, userList, desireList);
+                recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
             }
             
-            
-        }while(choice != 5);
-    }
-    
-    public Map<User, List<Integer>> getAllDesireList(List<User> userList)
-    {
-        Map<User, List<Integer>> desirelist = new HashMap<>();
-        String line;
-        
-        Collections.sort(userList, new Comparator<User>(){
-            @Override
-            public int compare(User o1, User o2) {
-                return (o1.getCodUser() < o2.getCodUser() ? -1 : 1);
-            }
-        });
-        
-        for (User u : userList) 
-            desirelist.put(u, new ArrayList<Integer>());
-        
-        try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));
-            
-            while(buffreader.ready()){
-                line = buffreader.readLine();
+            else if (choice == 4)
+            {
+                code = (!listCategory.isEmpty()) ? (listCategory.get(listCategory.size() - 1).getCodCategory()+ 1) : 0;  // Código que será adicionado para o usuário
+           
+                System.out.println("\nEnter with the name of the category:");
+                nameCategory = scannerstring.nextLine();
+                System.out.println("Give us a brief description of the category:");
+                descriptionCategory = scannerstring.nextLine();
                 
-                String[] desires = line.split(",");
-                // pegar o conteudo em arquivo e guardar na lista
-                desirelist.get(userList.get(Integer.parseInt(desires[0]))).add(Integer.parseInt(desires[1]));
-            }
-        }
-        catch(Exception e){
-            System.out.println("\n::: Can't get the desire's list :::");
-        }
+                listCategory.add(new Category(code, nameCategory, descriptionCategory));
+                listCategory.get(listCategory.size() - 1).addFileCategory();
+                
+                Collections.sort(listCategory, new Comparator<Category>(){
 
-        return desirelist;
-    }
-    
-    public List <ClientStruct> getDesireList(int codeProduct){
-        
-        List <ClientStruct> desireList = new ArrayList<>();
-        String line;
-        
-        try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));
+                    @Override
+                    public int compare(Category o1, Category o2) {
+                        return o1.getCodCategory() < o2.getCodCategory() ? -1 : 1;
+                    }
+                });
+            }
             
-            while(buffreader.ready()){
-                line = buffreader.readLine();
+            else if(choice == 5)
+            {
+//                System.out.println("\n:: Enter with the number of updates to be made ::");
+//                numberOfUpdates = scanner.nextInt();
+//                
+//                for (int i = 0; i < numberOfUpdates; i++) 
+//                {
+//                    System.out.println("\n::: Enter the name of the product :::");
+//                    nameProduct = scannerstring.nextLine();
+//                    
+//                    System.out.println("\n::: Enter the number of the products :::");
+//                    units = scanner.nextInt();
+//
+//                    if ((code = updateStock(nameProduct, units, listProducts)) != -1)
+//                    {
+//                        System.out.println("\n::: The product {" + nameProduct + "} was successfully updated.");
+//                        System.out.println("::: Notifying the users about the update...");
+//                        
+//                        
+//                    }
+//                        
+//                    else
+//                        System.out.println("\n::: The product {" + nameProduct + "} wasn't found in the LORMarket!\n");
+//                    
+//                    
+//                    backup();
+//                    recoverAllLists();
+//                }
+            }
+            else if (choice == 7)
+            {
+                for (ClientStruct c : clientList) 
+                {
+                    System.out.println(c.user.toString());
+                }
+                System.out.println("\n::: Users online listed successfully! :::");
+            }
+            
+        } while (choice != 6);
+    }
+        
+    public int updateStock(String nameProduct, int units, List<Product> listProducts)
+    {
+        for (Product product : listProducts)
+        {
+            if(product.getNameProduct().equals(nameProduct))
+            {
+                product.setStockUnits(units + product.getStockUnits());
+                product.setOrderedUnits((product.getOrderedUnits() > units) ? product.getOrderedUnits() - units : 0);
                 
-                String[] desires = line.split(",");
-                // pegar o conteudo em arquivo e guardar na lista
-               // desireList.add();
+                return (product.getCodProduct());
             }
         }
-        catch(Exception e){
-            System.out.println("\n::: Can't get the desire's list :::");
-        }
         
-        return desireList;
+        return (-1);
     }
     
     // Receber os dados do novo produto e gravar no arquivo as respectivas informações
@@ -241,11 +249,13 @@ public class ServerMenu
         
         try{
             File fp = new File(DESIRE_FILE);
-            FileWriter fw = new FileWriter(fp, true);
-            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+//            FileWriter fw = new FileWriter(fp, true);
+//            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
         
             if(!fp.exists()){
                 fp.createNewFile();
+//                fw.close();
+//                pw.close();
             }
             
         }
@@ -254,74 +264,116 @@ public class ServerMenu
         }
     }
     
-    public List<User> getAllTheUser(){
-        
-        List<User> listUsers = new ArrayList<>();
-        String line;
-        
-        try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(USERS_FILE));
-            
-            while(buffreader.ready()){
-                line = buffreader.readLine();
-                
-                String[] desires = line.split(",");
-                // pegar o conteudo em arquivo e guardar na lista
-                listUsers.add(new User(Integer.parseInt(desires[0]), desires[1], desires[2],  desires[3],  desires[4], desires[5],  desires[6]));
+    public int getSupplier(List<Supplier> listSupplier, String nameSupplier){
+        int code = -1;
+        for (Supplier supplier : listSupplier) {
+            if(supplier.getNameSupplier().equals(nameSupplier)){
+                code = supplier.getCodSupplier();
             }
         }
-        catch(Exception e){
-            System.out.println("\n::: Can't get the user's list :::");
-        }
-
-        return listUsers;
+        return code;
     }
     
-            
-    public List<Category> getAllCategories(){
+    public int getCategory(List<Category> listCategory, String nameCategory){
+        int code = -1;
         
-        List<Category> listcat = new ArrayList<>();
-        String line;
-        
-        try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(CATEGORIES_FILE));
-            
-            while(buffreader.ready()){
-                line = buffreader.readLine();
-                
-                String[] desires = line.split(",");
-                // pegar o conteudo em arquivo e guardar na lista
-                listcat.add(new Category(Integer.parseInt(desires[0]), desires[1], desires[2]));
+        for (Category category : listCategory) {
+            if(category.getNameCategory().equals(nameCategory)){
+                code = category.getCodCategory();
             }
         }
-        catch(Exception e){
-            System.out.println("\n::: Can't get the Category's list :::");
-        }
-
-        return listcat;     
-    }
-            
-    public List<Supplier> getAllSuppler(){
-        
-        List<Supplier> listSupplier = new ArrayList<>();
-        String line;
-        
-        try{
-            BufferedReader buffreader = new BufferedReader(new FileReader(SUPPLIERS_FILE));
-            
-            while(buffreader.ready()){
-                line = buffreader.readLine();
-                
-                String[] desires = line.split(",");
-                // pegar o conteudo em arquivo e guardar na lista
-                listSupplier.add(new Supplier(Integer.parseInt(desires[0]), desires[1], desires[2],  desires[3]));
-            }
-        }
-        catch(Exception e){
-            System.out.println("\n::: Can't get the Supplier's list :::");
-        }
-
-        return listSupplier;     
+        return code;
     }
     
+    //Falta verificar a condição se um produto tem menos que a quantidade mais baixa definida.
+    
+    public static void removeFromStock(int code, int units){
+        listProducts = Server.BringList();
+        
+        for (Product listProduct : listProducts) {
+            if (listProduct.getCodProduct() == code) {
+                listProduct.setStockUnits(units);
+            }
+        }
+        
+        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
+    }
+    
+    
+    
+    public static void addSale(String nameUser, int codeProduct, int quantityProducts, Calendar date){
+        int codeUser = 0;
+        int lastCode = (!listSale.isEmpty()) ? (listSale.get(listSale.size() - 1).getCodSale()+ 1) : 0;
+        
+        for(User user : userList){
+            if(user.getName().equals(nameUser)){
+                codeUser = user.getCodUser();
+            }
+        }
+        listSale.add(new Sale(lastCode, codeUser, codeProduct, quantityProducts, dateFormat.format(date.getTime())));
+    }
+
+    public static List<ClientStruct> getClientList(){
+        return clientList;
+    }
+    
+    public static void addDesire(String nameUSer, int codeProduct){
+        
+        for (User u : userList) // para cada usuário
+        {
+            if(u.getName().equals(nameUSer)){
+                desireList.get(u).add(codeProduct);
+            }
+        }
+        
+        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
+    }
+    
+    public static void removeDesire(int codeUser, int codeProduct){
+        for (ClientStruct client : clientList) {
+            if(client.getUser().getCodUser() == codeUser){
+                client.communicate.sendToClient(new Command( new String[]{
+                    REMOVE_DESIRE, String.valueOf(codeProduct)
+                }).get());
+                break;
+            }
+        }
+    }
+    
+    public static void notifyUsers(int code)
+    {
+        for (User u : userList) // para cada usuário
+        {
+            for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
+            {
+                if (codProduct == code) // se o usuário queria o produto que foi atualizado, notifica-o
+                {
+                    new SendMail().sendMail(u.getEmail(), 
+                        "LORMarket:::Product Available!!!", "The product {" 
+                        + listProducts.get(codProduct).getNameProduct() + 
+                        "} was updated.\nCome to LORMarket and check it out!"
+                        + "\n\nPS: The product was removed from your desire list."
+                    );
+                    
+                    for (int i = 0; i < desireList.get(u).size(); i++)
+                    {
+                        if (desireList.get(u).get(i) == code)
+                        {
+                            desireList.get(u).remove(i);
+                            break;
+                        }
+                    }
+                    
+                    removeDesire(u.getCodUser(), codProduct);
+
+                    break;
+                }
+            }
+        }
+        
+        backup(listProducts, listCategory, listSupplier, userList, desireList);
+        recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
+    }
 }

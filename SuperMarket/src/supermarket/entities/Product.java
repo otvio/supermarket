@@ -1,20 +1,12 @@
 
 package supermarket.entities;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.List;
 import static server.Server.PRODUCTS_FILE;
 
-public class Product 
+public class Product
 {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
     private int codProduct;
@@ -25,7 +17,6 @@ public class Product
     private double unitPrice;
     private String nameProduct;
     private Calendar validityProduct;
-
     
     public Product(int codProduct, int codSupplier, int codCategory, 
             int stockUnits, int orderedUnits, double unitPrice, 
@@ -50,24 +41,19 @@ public class Product
     }
     
 	
-	public void addFileProduct()
-	{
+    public void addFileProduct()
+    {
         try
-		{
+        {
             File fp = new File(PRODUCTS_FILE);
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
-            
+
             if(fp.exists() == false)
             { // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
             }
-			
-            /*
-            public Product(int codProduct, int codSupplier, int codCategory, 
-            int stockUnits, int orderedUnits, double unitPrice, 
-            String nameProduct, String validity) /*/
-            
+
             pw.print(this.codProduct);
             pw.print(",");
             pw.print(this.codSupplier);
@@ -83,12 +69,12 @@ public class Product
             pw.print(this.nameProduct);
             pw.print(",");
             pw.println(dateFormat.format(this.validityProduct.getTime()));
-            
+
             pw.close();
             fw.close();
         }
         catch(Exception e)
-		{
+        {
             System.out.println("Can't store in the file :(");
         }
     }
@@ -165,13 +151,58 @@ public class Product
 	
     public void printProduct(Category c)
     {
-        System.out.println("//--------------------------------------"); 
-        System.out.println("||Product Code: " + (this.getCodProduct()));
-        System.out.println("||Product name : " + this.getNameProduct());
-        System.out.println("||Price: " + this.getUnitPrice());
-        System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
-        System.out.println("||Category: " + c.getNameCategory());
-        System.out.println("||Units: " + this.getStockUnits());            
-        System.out.println("\\\\--------------------------------------\n\n"); 
+        System.out.println("//--------------------------------------\\\\"); 
+        printAdapted("Product Code: " + (this.getCodProduct()));
+        printAdapted("Product name: " + this.getNameProduct());
+        printAdapted("Price: " + this.getUnitPrice());
+        printAdapted("Validity: " + dateFormat.format(this.validityProduct.getTime()));
+        
+        if (c != null)
+            printAdapted("Category: " + c.getNameCategory());
+        
+        if (this.getStockUnits() > 0)
+            printAdapted("Units: " + this.getStockUnits());    
+        else
+            printAdapted("Product Unavailable!");
+        
+        System.out.println("\\\\--------------------------------------//\n\n"); 
+    }
+    
+    public void printAdapted(String str) // 42 caracteres
+    {
+        // º início parametros... \\
+        int maxLineSize = 42;
+        String border = "||";
+        String fill = " ";
+        String continuation = "...";
+        PrintStream output = new PrintStream(System.out);
+        // fim parâmetros      º \\       
+        
+        if (str.length() == 0) return ;
+        
+        if ((str.length() > 0) && ((str.length() + 2 * border.length()) <= maxLineSize))
+        {
+            output.print(border + str);
+            int diff = maxLineSize - 2 * border.length() - str.length();
+            
+            for (int i = 0; i < diff; i++)
+                output.print(fill);
+            
+            output.println(border);
+        }
+        else
+            output.println(
+                    border +
+                    str.substring(0, maxLineSize - 2 * border.length() - (continuation).length()) +
+                    continuation +
+                    border
+            );
+    }
+    
+    //marcos.cesar.camargo@usp.br
+
+    public String getValidity()
+    {
+        return dateFormat.format(validityProduct.getTime());
     }
 }

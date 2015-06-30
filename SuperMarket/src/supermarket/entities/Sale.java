@@ -1,8 +1,14 @@
 
 package supermarket.entities;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import static server.Server.PRODUCTS_FILE;
+import static server.Server.SALES_FILE;
 
 public class Sale 
 {
@@ -11,6 +17,7 @@ public class Sale
     private int codProduct;
     private int quantityProducts;
     private Calendar dateSale;
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
 
     
     public Sale(int codSale, int codUser, int codProduct, 
@@ -31,6 +38,37 @@ public class Sale
         );
     }
     
+    public void addFileSale()
+    {
+        try
+        {
+            File fp = new File(SALES_FILE);
+            FileWriter fw = new FileWriter(fp, true);
+            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
+            
+            if(fp.exists() == false)
+            { // caso o arquivo nao exista, cria um arquivo
+                fp.createNewFile();
+            }
+            
+            pw.print(this.codSale);
+            pw.print(",");
+            pw.print(this.codUser);
+            pw.print(",");
+            pw.print(this.codProduct);
+            pw.print(",");
+            pw.print(this.quantityProducts);
+            pw.print(",");
+            pw.println(dateFormat.format(this.dateSale.getTime()));
+            
+            pw.close();
+            fw.close();
+        }
+        catch(Exception e)
+		{
+            System.out.println("Can't store in the file :(");
+        }
+    }
     
     public int getCodSale() 
     {

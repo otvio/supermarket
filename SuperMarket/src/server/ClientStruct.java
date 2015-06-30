@@ -5,7 +5,7 @@ import java.util.List;
 import supermarket.entities.User;
 
 // classe da qual será formada a lista de clientes
-class ClientStruct
+public class ClientStruct
 {
     protected User user;
     protected CommunicateWithClient communicate;
@@ -24,7 +24,12 @@ class ClientStruct
     }
     
     public int getCodeProduct(int i)
-	{
+    {
         return desires.get(i);
+    }
+    
+    public User getUser() 
+    {
+        return user;
     }
 }
