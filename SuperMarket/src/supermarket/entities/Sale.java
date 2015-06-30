@@ -8,7 +8,7 @@ import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.GregorianCalendar;
 import static server.Server.SALES_FILE;
-import static supermarket.SuperMarket.printAdapted;
+import static supermarket.SuperMarket.*;
 
 public class Sale 
 {
@@ -122,14 +122,16 @@ public class Sale
     
     public String toString(User user, Product product)
     {
-        String result = "//--------------------------------------\\\\" + "\n";
-        printAdapted("Sale code: " + String.valueOf(this.codSale), result);
-        printAdapted("Sale date: " + dateFormat.format(this.dateSale.getTime()), result);
-        printAdapted("User: " + user.getName(), result);
-        printAdapted("Product: " + product.getNameProduct(), result);
-        printAdapted("QuantityProducts: " + String.valueOf(this.quantityProducts), result);
-        result += "\\\\--------------------------------------//" + "\n\n";
+        String[] vec = new String[]{""};
+        String profit = cutDecimalDigits(String.valueOf(this.quantityProducts * product.getUnitPrice()));
         
-        return (result);
+        printAdapted("Sale date: " + dateFormat.format(this.dateSale.getTime()), vec);
+        printAdapted("User: " + user.getName(), vec);
+        printAdapted("Product: " + product.getNameProduct(), vec);
+        printAdapted("Quantity of products: " + String.valueOf(this.quantityProducts), vec);
+        printAdapted("Profit: $" + profit, vec);
+        
+        System.out.println(vec[0]);
+        return (vec[0]);
     }
 }
