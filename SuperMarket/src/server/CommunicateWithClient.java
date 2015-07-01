@@ -102,20 +102,24 @@ public class CommunicateWithClient implements Runnable
                             Integer.parseInt(command.getArray()[4])
                     );
                     
-                    ServerMenu.notifyUsers(Integer.parseInt(command.getArray()[1]));
-                    
                     ServerMenu.removeFromStock(
                             Integer.parseInt(command.getArray()[1]), 
                             units);
                     
                     sendUpdateUnit(Integer.parseInt(command.getArray()[1]), 
                             units); 
+                    
+                    ServerMenu.notifyUsers(Integer.parseInt(command.getArray()[1]));
+                    
                     break;
                  
                 case ADD_DESIRE:
                     ServerMenu.addDesire(command.getArray()[1], Integer.parseInt(command.getArray()[2]));
                  break;
                     
+                case DISCONNECT:
+                    ServerMenu.disconnectClient(command.getArray()[1]);
+                break;
                 default:
                     System.out.println(command.get());
                     break;

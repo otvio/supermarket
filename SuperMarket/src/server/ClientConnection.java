@@ -245,14 +245,4 @@ public class ClientConnection implements Runnable
         
         return desireList;
     }
-    
-    public static List<User> getUserList() 
-    {
-        return userList;
-    }
-    
-    public static List<ClientStruct> getClientList() 
-    {
-        return clientList;
-    }
 }

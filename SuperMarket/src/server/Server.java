@@ -68,6 +68,7 @@ public class Server
         catch (Exception e)
         {
             System.out.println("::: I'm so sorry! Server Error! :( :::");
+            System.exit(0);
         }
     }
     
@@ -119,7 +120,7 @@ public class Server
             { // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
             }
-        
+            
             for (User u : userList) // para cada usuário
             {
                 for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
@@ -237,8 +238,11 @@ public class Server
             }
         });
         
-        for (User u : userList) 
-            desirelist.put(u, new ArrayList<Integer>());
+        for (User u : userList)
+        {
+            List<Integer> list = new ArrayList<>();
+            desirelist.put(u, list);
+        }
         
         try{
             BufferedReader buffreader = new BufferedReader(new FileReader(DESIRE_FILE));

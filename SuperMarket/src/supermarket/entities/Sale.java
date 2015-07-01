@@ -131,7 +131,6 @@ public class Sale
         printAdapted("Quantity of products: " + String.valueOf(this.quantityProducts), vec);
         printAdapted("Profit: $" + profit, vec);
         
-        System.out.println(vec[0]);
         return (vec[0]);
     }
 }

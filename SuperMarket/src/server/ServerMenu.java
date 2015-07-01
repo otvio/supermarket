@@ -8,6 +8,7 @@ import extras.email.SendMail;
 import static server.Server.*;
 import supermarket.entities.*;
 import static command.Command.*;
+import extras.reportpdf.GeneratorPDF;
 import java.text.SimpleDateFormat;
 
 public class ServerMenu 
@@ -49,6 +50,7 @@ public class ServerMenu
             System.out.println("2 - List all the products");
             System.out.println("3 - Registering new Supplier");
             System.out.println("4 - Add a new category");
+            System.out.println("5 - Generate PDF");
             System.out.println("6 - Quit");
             System.out.println("\n7 - See the list of users online");
                 
@@ -189,35 +191,17 @@ public class ServerMenu
             
             else if(choice == 5)
             {
-//                System.out.println("\n:: Enter with the number of updates to be made ::");
-//                numberOfUpdates = scanner.nextInt();
-//                
-//                for (int i = 0; i < numberOfUpdates; i++) 
-//                {
-//                    System.out.println("\n::: Enter the name of the product :::");
-//                    nameProduct = scannerstring.nextLine();
-//                    
-//                    System.out.println("\n::: Enter the number of the products :::");
-//                    units = scanner.nextInt();
-//
-//                    if ((code = updateStock(nameProduct, units, listProducts)) != -1)
-//                    {
-//                        System.out.println("\n::: The product {" + nameProduct + "} was successfully updated.");
-//                        System.out.println("::: Notifying the users about the update...");
-//                        
-//                        
-//                    }
-//                        
-//                    else
-//                        System.out.println("\n::: The product {" + nameProduct + "} wasn't found in the LORMarket!\n");
-//                    
-//                    
-//                    backup();
-//                    recoverAllLists();
-//                }
+                GeneratorPDF.generate();
+                System.out.println("\n::: PDF created successfully! ::");
             }
             else if (choice == 7)
             {
+                for (User c : userList) 
+                {
+                    System.out.println(c.toString());
+                }
+                System.out.println("\n::: Users listed successfully! :::");
+                
                 for (ClientStruct c : clientList) 
                 {
                     System.out.println(c.user.toString());
@@ -355,9 +339,14 @@ public class ServerMenu
     }
     
     public static void notifyUsers(int code)
-    {
+    {        
         for (User u : userList) // para cada usuário
         {
+            if (desireList != null && 
+                    desireList.get(u) != null && 
+                    desireList.get(u).isEmpty()
+                ) continue;
+            
             for (Integer codProduct : desireList.get(u)) // para cada lista de desejos do usuário
             {
                 if (codProduct == code) // se o usuário queria o produto que foi atualizado, notifica-o
@@ -388,4 +377,25 @@ public class ServerMenu
         backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
     }
+    
+    public static void disconnectClient(String nameUser){
+        for (ClientStruct client : clientList) {
+            if (client.user.getName().equals(nameUser)) {
+                clientList.remove(client);
+                break;
+            }
+        }
+    }
+
+    
+    public static List<User> getUserList() 
+    {
+        return userList;
+    }
+    
+    public static Map<User,List<Integer>> getDesireList()
+    {
+        return (desireList);
+    }
+    
 }

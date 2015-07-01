@@ -2,8 +2,15 @@
 package login;
 
 import command.Command;
+import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import server.*;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static server.Server.USERS_FILE;
 import supermarket.entities.User;
 
 public class Login
@@ -18,8 +25,8 @@ public class Login
     
     public Login(Command command, CommunicateWithClient cwc)
     {
-        userlist = ClientConnection.getUserList();
-        clientlist = ClientConnection.getClientList();
+        userlist = ServerMenu.getUserList();
+        clientlist = ServerMenu.getClientList();
         this.command = command;
         this.communicateWithClient = cwc;
     }
@@ -57,12 +64,14 @@ public class Login
             {
                 nameClient = user.getName();
                 codClient = user.getCodUser();
+                List<Integer> list;
                 try
                 {
+                    list = ClientConnection.getUserDesires(user.getCodUser());
                     clientlist.add(new ClientStruct(
-                            user, communicateWithClient, 
-                            ClientConnection.getUserDesires(user.getCodUser()))
+                            user, communicateWithClient, list)
                     );
+                    ServerMenu.getDesireList().put(user, list);
                 } catch (Exception ex) { }
             }
         }
@@ -104,11 +113,13 @@ public class Login
             codClient = user.getCodUser();
             userlist.add(user);
             user.addFileUser();
+            
             try
             {
                 clientlist.add(new ClientStruct
                         (user, communicateWithClient, new ArrayList<Integer>())
                 );
+                ServerMenu.getDesireList().put(user, new ArrayList<Integer>());
             } catch (Exception ex) { }
         }
         

@@ -17,59 +17,49 @@ import supermarket.entities.User;
 
 public class GeneratorPDF 
 {
-    static int count = 1;
+    static int count;
     static String datachoice;
     static Scanner input = new Scanner (System.in);
-    
     
     static List<Sale> sale = new ArrayList<>();
     static List<User> user = new ArrayList<>();
     static List<Product> product = new ArrayList<>();
     
-    public void GeneratorPDF(List<Sale> list, List<User> user , List <Product> product)
-    {      
-        this.sale = list;
-        this.user = user;
-        this.product = product;
-    }
-    
-    public static void main(String[] args) throws FileNotFoundException 
+    public static void generate() 
     {
         GeneratorPDF.sale = ServerMenu.getSalesList();
         GeneratorPDF.user = ServerMenu.getUsersList();
         GeneratorPDF.product = ServerMenu.getProductsList();
         
-        for(Sale s: sale)
-        {
-            System.out.println(s.toString());
-        }
-        
         Document document = new Document();
         
         try
         {
-            System.out.println("  ...::: LORMarket - Historic Sale :::...");
-            System.out.println("A data utilizada será: \n "
-                               + "(1). Vendas do dia\n"
-                               + " (2). Do mês\n");
-            
-            
             do
             {
+                System.out.println("\t:::::::::::::::::::::::::::::::::");
+                System.out.println("\t::: LORMarket - Historic Sale :::");
+                System.out.println("\t:::::::::::::::::::::::::::::::::\n\n");
+            
+                System.out.print(  "::::::::::::::::::::::::::::::\n" 
+                                 + ":: Analyse the sales based: ::\n"
+                                 + "::   (1). on today          ::\n"
+                                 + "::   (2). at month          ::\n"
+                                 + "::::::::::::::::::::::::::::::\n\n"
+                                 + ":: Type your choice: ");
+                
                 datachoice = input.next();
             }while((!datachoice.equals("1")) && (!datachoice.equals("2")));
             
             Calendar date = Calendar.getInstance();
             
             if(datachoice.equals("2"))
-            {
                 date.set(Calendar.DAY_OF_MONTH, 1);
-            }
             
             File home = FileSystemView.getFileSystemView().getHomeDirectory();
             File folder = new File(home.getPath() + "\\SuperMarket\\Reports\\");
             folder.mkdirs();
-            //"DAY(dd-MM-yyyy)_HOUR(hh-mm-ss)"
+            
             PdfWriter.getInstance(document, 
                     new FileOutputStream(folder.getPath() 
                             + "\\Report-DAY(" + new SimpleDateFormat("dd-MM-yyyy").format(Calendar.getInstance().getTime()) 
@@ -137,6 +127,7 @@ public class GeneratorPDF
                 }
             }
             
+            count = 1;
             for (Sale s : mylist)
             {
                 document.add(new Paragraph("Sale " + count + ". ", fontUnderline));
