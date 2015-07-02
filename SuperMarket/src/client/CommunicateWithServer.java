@@ -10,12 +10,12 @@ import supermarket.entities.*;
 
 public class CommunicateWithServer implements Runnable
 {
-    private Client client;
-    private ClientMenu clientMenu;
-    private final PrintStream toServer;
-    private final Scanner fromServer;
+    private Client client;                          // Cliente que irá se comunicar com o server
+    private ClientMenu clientMenu;                  // ClientMenu para comunicar-se com o cliente menu
+    private final PrintStream toServer;             // toServer para comunicar-se com o server
+    private final Scanner fromServer;               // fromServer para receber dados vindos do servidor
     private final CommunicateWithServer cws;
-    
+    // Construtor da classe
     public CommunicateWithServer(Client client, PrintStream sendToServer, Scanner receiveFromServer)
     {
         this.fromServer = receiveFromServer;
@@ -23,12 +23,12 @@ public class CommunicateWithServer implements Runnable
         this.client = client;
         this.cws = this;
     }
-    
+    // Método para enviar dados pro servidor
     public void sendToServer(String message)
     {
         toServer.println(message);
     }
-
+    // Método para receber do servidor
     public String receiveFromServer()
     {
         return ((fromServer.hasNext()) ? fromServer.next() : "");
@@ -44,7 +44,7 @@ public class CommunicateWithServer implements Runnable
         {
             command = new Command(fromServer.nextLine());
             
-            switch (command.getArray()[0])
+            switch (command.getArray()[0])   // Switch para verificar a opção que está no command
             {
                 case LOGIN:
                     login = LoginAttempt.valueOf(command.getArray()[1]);
@@ -93,7 +93,7 @@ public class CommunicateWithServer implements Runnable
             }
         }
     }
-
+    // Método para verificar o login do cliente
     private synchronized void checkLogin(final Command command, LoginAttempt login) 
     {
         switch (login)
@@ -130,7 +130,7 @@ public class CommunicateWithServer implements Runnable
                 break;
         }
     }
-
+    // Método para adicionar algum produto na lista
     private synchronized void addProduct(Command command)
     {
         clientMenu.getProductList().add(new Product(
@@ -144,14 +144,14 @@ public class CommunicateWithServer implements Runnable
     }
     
     
-
+    // Método para adicionar alguma categoria na lista de categoria
     private synchronized void addCategory(Command command)
     {
         clientMenu.getCategoryList().add(new Category(
                 Integer.parseInt(command.getArray()[1]), 
                 command.getArray()[2], command.getArray()[3]));
     }
-
+    // Método para adicionar algum desejo na lista de desejos
     private synchronized void addDesire(Command command)
     {
         clientMenu.getDesireList().add(Integer.parseInt(command.getArray()[1]));

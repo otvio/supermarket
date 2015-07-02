@@ -63,21 +63,23 @@ public class ServerMenu
             System.out.println("::    4 - Add a new category.             ::");
             System.out.println("::    5 - Generate PDF.                   ::");
             System.out.println("::    6 - Quit.                           ::");
-            System.out.println("::    7 - See the list of users online.   ::");
             System.out.println("::::::::::::::::::::::::::::::::::::::::::::");
             
             System.out.print("\n:: Type your choice:");
                 
             choice = scanner.nextInt();
             
-            if(choice == 1){
-                
-                code = (!listProducts.isEmpty()) ? (listProducts.get(listProducts.size() - 1).getCodProduct()+ 1) : 0;  // Código que será adicionado para o usuário
+            if(choice == 1)
+            {
                 code = -1;
-                for(Product p : listProducts){
-                    if(code < p.getCodProduct()) code = p.getCodProduct();
-                }
+                for(Product p : listProducts)
+                    if(code < p.getCodProduct()) 
+                        code = p.getCodProduct();
+                
                 code++;
+                
+                // pede cada informação do produto a ser inserido
+                               
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
                 
@@ -99,36 +101,39 @@ public class ServerMenu
                 codeSupplier = getSupplier(listSupplier, nameSupplier);
                 codeCategory = getCategory(listCategory, nameCategory);
                 
-                if(codeCategory != -1 && codeSupplier != -1){
-                
+                if(codeCategory != -1 && codeSupplier != -1)
+                {
                     Product product = new Product(code, codeSupplier, codeCategory, units, units, price, nameProduct, expirationdate);
-                
+                    
+                    // inserir no arquivo o produto que acabou de ser criado
                     product.addFileProduct(true);
                 
-                    Collections.sort(listProducts, new Comparator<Product>(){
-
+                    // ordenar a lista por código
+                    Collections.sort(listProducts, new Comparator<Product>()
+                    {
                         @Override
                         public int compare(Product o1, Product o2) {
                             return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
                         }
                     });
-                    sendToClient(product);
+                    
+                    // enviar para cada cliente o produto que acabou de ser inserido
+                    sendToClients(product);
                 }
                 
-                if(codeCategory == -1){
+                if(codeCategory == -1)
+                {
                     System.out.println("\n:::The name of the category is invalid, please try another one:::");
                 }
-                //backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
-                //recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
-                //System.exit(0);
             }
             
-            else if(choice == 2){
-               
+            else if(choice == 2)
+            {
                 try{
                     listProducts = server.BringList();
                     System.out.println("\n ::: Show all the Products :: \n");
-
+                    
+                    // ordenar a lista de produtos por quantidade em estoque
                     Collections.sort(listProducts, new Comparator<Product>()
                     {
                         @Override
@@ -137,7 +142,8 @@ public class ServerMenu
                             return (o1.getStockUnits() < o2.getStockUnits() ? -1 : 1);
                         }
                     });
-
+                    
+                    // ordenar a lista de categorias por código
                     Collections.sort(categoryList, new Comparator<Category>()
                     {
                         @Override
@@ -146,7 +152,8 @@ public class ServerMenu
                             return (o1.getCodCategory() < o2.getCodCategory() ? -1 : 1);
                         }
                     });
-
+                    
+                    // loop para printar cada produto
                     for(Product p : listProducts)
                     {
                         System.out.println("Product " + p.getCodProduct() + ". ");
@@ -163,6 +170,8 @@ public class ServerMenu
             {
                 code = (!listSupplier.isEmpty()) ? (listSupplier.get(listSupplier.size() - 1).getCodSupplier()+ 1) : 0;  // Código que será adicionado para o usuário
                 
+                // pegar as informações do supplier
+                
                 System.out.println("\nEnter with the name of the supplier:");
                 nameSupplier = scannerstring.nextLine();
                 
@@ -172,11 +181,13 @@ public class ServerMenu
                 System.out.println("Enter with the name of the contacting:");
                 contacting = scannerstring.nextLine();
                 
+                // adiciona o supplier na lista de suppliers
                 listSupplier.add(new Supplier(code ,nameSupplier, nameContact, contacting));
                 listSupplier.get(listSupplier.size() - 1).addFileSupplier();
                 
-                Collections.sort(listSupplier, new Comparator<Supplier>(){
-
+                // ordena a lista de suppliers por código
+                Collections.sort(listSupplier, new Comparator<Supplier>()
+                {
                     @Override
                     public int compare(Supplier o1, Supplier o2) {
                         return o1.getCodSupplier() < o2.getCodSupplier() ? -1 : 1;
@@ -190,22 +201,29 @@ public class ServerMenu
             else if (choice == 4)
             {
                 code = (!listCategory.isEmpty()) ? (listCategory.get(listCategory.size() - 1).getCodCategory()+ 1) : 0;  // Código que será adicionado para o usuário
-           
+                
+                // solicitar dados para criar a nova categoria
+                
                 System.out.println("\nEnter with the name of the category:");
                 nameCategory = scannerstring.nextLine();
+                
                 System.out.println("Give us a brief description of the category:");
                 descriptionCategory = scannerstring.nextLine();
                 
+                // adiciona o supplier na lista de categorias
                 listCategory.add(new Category(code, nameCategory, descriptionCategory));
                 listCategory.get(listCategory.size() - 1).addFileCategory();
                 
-                Collections.sort(listCategory, new Comparator<Category>(){
-
+                // ordena a lista de categorias por código
+                Collections.sort(listCategory, new Comparator<Category>()
+                {
                     @Override
                     public int compare(Category o1, Category o2) {
                         return o1.getCodCategory() < o2.getCodCategory() ? -1 : 1;
                     }
                 });
+                
+                
             }
             
             else if(choice == 5)
@@ -213,27 +231,15 @@ public class ServerMenu
                 GeneratorPDF.generate();
                 System.out.println("\n::: PDF created successfully! ::");
             }
-            else if (choice == 7)
-            {
-                for (User c : userList) 
-                {
-                    System.out.println(c.toString());
-                }
-                System.out.println("\n::: Users listed successfully! :::");
-                
-                for (ClientStruct c : clientList) 
-                {
-                    System.out.println(c.user.toString());
-                }
-                System.out.println("\n::: Users online listed successfully! :::");
-            }
             
         } while (choice != 6);
+
+        System.exit(0);
     }
         
     public int updateStock(String nameProduct, int units, List<Product> listProducts)
     {
-        for (Product product : listProducts)
+        for (Product product : listProducts) // procura 
         {
             if(product.getNameProduct().equals(nameProduct))
             {
@@ -252,13 +258,9 @@ public class ServerMenu
         
         try{
             File fp = new File(DESIRE_FILE);
-//            FileWriter fw = new FileWriter(fp, true);
-//            PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
-        
+            
             if(!fp.exists()){
                 fp.createNewFile();
-//                fw.close();
-//                pw.close();
             }
             
         }
@@ -405,7 +407,6 @@ public class ServerMenu
             }
         }
     }
-
     
     public static List<User> getUserList() 
     {
@@ -417,13 +418,24 @@ public class ServerMenu
         return (desireList);
     }
     
-    public void sendToClient( Product product){
+    public void sendToClients(Product product){
         for (ClientStruct client : clientList) {
             client.communicate.sendToClient(new Command( new String[]{
                 SEND_PRODUCT, String.valueOf(product.getCodProduct()), String.valueOf(product.getCodSupplier()),
                 String.valueOf(product.getCodCategory()),
                 String.valueOf(product.getStockUnits()), String.valueOf(product.getOrderedUnits()),
                 String.valueOf(product.getUnitPrice()), product.getNameProduct(), product.getValidity()
+            }).get());
+        }
+    }
+    
+    public void sendToClients(Category c){
+        for (ClientStruct client : clientList) {
+            client.communicate.sendToClient(new Command(new String[]{
+                SEND_CATEGORY,
+                String.valueOf(c.getCodCategory()),
+                String.valueOf(c.getNameCategory()), 
+                String.valueOf(c.getDescription())
             }).get());
         }
     }

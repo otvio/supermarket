@@ -1,12 +1,30 @@
 
 package supermarket;
 
+import client.Client;
 import java.io.PrintStream;
+import java.util.Scanner;
+import server.Server;
 
 public class SuperMarket
 {
     public static void main(String[] args)
     {
+        Scanner in = new Scanner(System.in);
+        String choice;
+        do{
+            System.out.println("Do you wanna be a:");
+            System.out.println("    (1) client");
+            System.out.println("    (2) server");
+            
+            choice = in.nextLine();
+            
+        } while (!choice.equals("1") && !choice.equals("2"));
+        
+        if (choice.equals("1"))
+            Client.main(null);
+        else
+            Server.main(null);
     }
     
     public static void printAdapted(String str) // 42 caracteres

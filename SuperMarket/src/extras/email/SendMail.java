@@ -30,12 +30,7 @@ public class SendMail
           
         Properties props = new Properties();  
   
-                // quem estiver utilizando um SERVIDOR PROXY descomente essa parte e atribua as propriedades do SERVIDOR PROXY utilizado  
-               /* 
-                props.setProperty("proxySet","true"); 
-                props.setProperty("socksProxyHost","localhost"); // IP do Servidor Proxy 
-                props.setProperty("socksProxyPort","12345");  // Porta do servidor Proxy 
-                  */
+        // quem estiver utilizando um SERVIDOR PROXY descomente essa parte e atribua as propriedades do SERVIDOR PROXY utilizado  
   
         props.put("mail.transport.protocol", "smtp"); //define protocolo de envio como SMTP  
         props.put("mail.smtp.starttls.enable","true");   

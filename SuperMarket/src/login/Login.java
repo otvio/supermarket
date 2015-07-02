@@ -2,27 +2,20 @@
 package login;
 
 import command.Command;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import server.*;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static server.Server.USERS_FILE;
 import supermarket.entities.User;
 
 public class Login
 {
-    private int codClient;
-    private String nameClient;
-    private LoginAttempt attempt;
-    private final Command command;
-    private final List<User> userlist;
-    private final List<ClientStruct> clientlist;
-    private final CommunicateWithClient communicateWithClient;
-    
+    private int codClient;                                     // Int para armazenar o codigo do cliente
+    private String nameClient;                                 // String para armazenar o nome do cliente
+    private LoginAttempt attempt;                              // attempt para verificar a tentativa de login
+    private final Command command;                             // Command para verificar a tentativa de login
+    private final List<User> userlist;                         // Lista de usuários
+    private final List<ClientStruct> clientlist;               // Lista de clientes
+    private final CommunicateWithClient communicateWithClient; // Responsável para comunicar com o servidor
+    // Construtor da classe login
     public Login(Command command, CommunicateWithClient cwc)
     {
         userlist = ServerMenu.getUserList();
@@ -30,13 +23,13 @@ public class Login
         this.command = command;
         this.communicateWithClient = cwc;
     }
-    
+    // Método para tentativa de login
     public LoginAttempt loginAttempt()
     {
         String ID = command.getArray()[1], password = command.getArray()[2];
         User user = null;
         
-        for (User u : userlist) 
+        for (User u : userlist) // Loop para verificar se usuário e senha é válido
         {
             if (u.getID().equals(ID) && u.getPassword().equals(password))
             {
@@ -44,14 +37,14 @@ public class Login
                 break;
             }
         }
-        
+        // Se Usuário for null da falha de conexão
         if (user == null)
             attempt = LoginAttempt.FAILED;
         else
         {
             attempt = LoginAttempt.SUCCESS;
             
-            for (ClientStruct client : clientlist) 
+            for (ClientStruct client : clientlist) // Loop para verificar o código do usuário e deixar ele logado
             {
                 if (client.getUser().getCodUser() == user.getCodUser())
                 {
@@ -60,8 +53,8 @@ public class Login
                 }
             }
             
-            if (attempt == LoginAttempt.SUCCESS)
-            {
+            if (attempt == LoginAttempt.SUCCESS) // Caso tenha sido efetuado o login, então
+            {                                   //  o usuário será inserido na lista de usuários online
                 nameClient = user.getName();
                 codClient = user.getCodUser();
                 List<Integer> list;
@@ -78,9 +71,9 @@ public class Login
         
         return (attempt);
     }
-    
+    // Método para criar um novo usuario
     public LoginAttempt createNewUser()
-    {
+    {   // ordena o usuário conforme o seu código
         Collections.sort(userlist, new Comparator<User>()
         {
             @Override
@@ -89,7 +82,7 @@ public class Login
                 return o1.getCodUser() < o2.getCodUser() ? -1 : 1;
             }
         });
-        
+        // Armazena os dados do usuário
         User user = new User(userlist.get(userlist.size() - 1).getCodUser() + 1, 
                 command.getArray()[1], command.getArray()[2], 
                 command.getArray()[3], command.getArray()[4], 
@@ -98,7 +91,7 @@ public class Login
         
         attempt = LoginAttempt.SUCCESS;
         
-        for (User u : userlist)
+        for (User u : userlist) // Loop que verifica se o usuário já está na lista
         {
             if (u.equals(user))
             {
@@ -107,7 +100,7 @@ public class Login
             }
         }
         
-        if (attempt == LoginAttempt.SUCCESS)
+        if (attempt == LoginAttempt.SUCCESS)  // Se o usuário for válido será adicionado no arquivo
         {
             nameClient = user.getName();
             codClient = user.getCodUser();
@@ -125,12 +118,12 @@ public class Login
         
         return (attempt);
     }
-    
+    // Método para pegar o nome do cliente
     public String getNameClient()
     {
         return nameClient;
     }
-    
+    // Método para pegar o código do cliente
     public int getCodClient()
     {
         return codClient;

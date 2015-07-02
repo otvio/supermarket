@@ -12,6 +12,7 @@ import java.util.Scanner;
 import static server.Server.*;
 import supermarket.entities.*;
 
+// classe utilizada para o servidor comunicar com cada cliente
 public class CommunicateWithClient implements Runnable
 {
     private final PrintStream toClient;
@@ -52,11 +53,11 @@ public class CommunicateWithClient implements Runnable
         {
             command = new Command(fromClient.nextLine());
             
-            switch (command.getArray()[0]) 
+            switch (command.getArray()[0]) // verifica qual é o comando a ser realizado
             {
                 case LOGIN:
                     login = new Login(command, this);
-                    attempt = login.loginAttempt();
+                    attempt = login.loginAttempt();  // tenta logar
                     
                     sendToClient(new Command(new String[]{LOGIN, attempt.name(),
                         (attempt == LoginAttempt.SUCCESS) ? login.getNameClient() : ""}).get());
@@ -177,10 +178,6 @@ public class CommunicateWithClient implements Runnable
     public synchronized void sendUpdateUnit(Integer code, Integer units){
         
         List<ClientStruct> listClients = ServerMenu.getClientList();
-        
-        for(ClientStruct client : listClients){
-            System.out.println(client.getUser().toString());
-        }
         
         for(ClientStruct client : listClients){
             client.communicate.sendToClient(new Command(new String[]{

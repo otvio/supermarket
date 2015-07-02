@@ -47,7 +47,7 @@ public class Product
         try
         {
             File fp = new File(PRODUCTS_FILE);
-            FileWriter fw = new FileWriter(fp, writeback);
+            FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
 
             if(fp.exists() == false)

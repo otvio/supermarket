@@ -22,7 +22,7 @@ public class Command
     
     private String command;
     private String[] commandSplitted;
-    
+    // Construtor para concatenar as strings para enviar pro servidor
     public Command(String[] vec)
     {
         command = "";
@@ -31,18 +31,18 @@ public class Command
         for (int i = 0; i < vec.length; i++) 
             command += vec[i] + ((i == vec.length - 1) ? "" : DELIMITER);
     }
-    
+    // Recebe a string para ser splitada
     public Command(String str)
     {
         command = str;
         commandSplitted = str.split("\\" + DELIMITER);
     }
-    
+    // Obtem o comando unido pelo delimitador
     public String get()
     {
         return command;
     }
-    
+    // Retorna a string splitada já
     public String[] getArray()
     {
         return commandSplitted;
