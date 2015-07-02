@@ -106,11 +106,8 @@ public class User
             FileWriter fw = new FileWriter(fp, true);
             PrintWriter pw = new PrintWriter(fw);    // cria um PrintWriter que irá escrever no arquivo
         
-            
             if(fp.exists() == false) // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
-            
-            
             
             // Os comandos abaixo salvam os dados no arquivo, após cada dado adicionado é acrescentada uma virgula para separa-los.
             pw.print(this.getCodUser());
@@ -125,7 +122,7 @@ public class User
             pw.print(",");
             pw.print(this.getID());
             pw.print(",");
-            pw.print(this.getPassword());
+            pw.println(this.getPassword());
             
             pw.close();
             fw.close();

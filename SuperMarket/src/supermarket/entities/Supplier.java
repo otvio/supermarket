@@ -4,6 +4,7 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.util.Random;
 import static server.Server.SUPPLIERS_FILE;
 
 public class Supplier 
@@ -13,6 +14,9 @@ public class Supplier
     private String nameContact;
     private String contacting;
     
+    // define para a quantidade mínima de produtos que o supplier deverá
+    // enviar para o mercado "LORMarket"
+    private static final int QUANTITY_TO_SEND = 50;
     
     public Supplier(int codSupplier, String nameSupplier, 
             String nameContact, String contacting) 
@@ -92,5 +96,10 @@ public class Supplier
     public void setContacting(String contacting) 
     {
         this.contacting = contacting;
+    }
+    
+    public int getMoreProducts(int codeProduct)
+    {
+        return (QUANTITY_TO_SEND + (new Random().nextInt(100)) + codeProduct);
     }
 }

@@ -1,12 +1,12 @@
 
 package server;
 
-import login.Login;
-import login.LoginAttempt;
+import login.*;
 import command.*;
 import static command.Command.*;
 
 import java.io.PrintStream;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Scanner;
 import static server.Server.*;
@@ -17,6 +17,7 @@ public class CommunicateWithClient implements Runnable
     private final PrintStream toClient;
     private final Scanner fromClient;
     private String nameClient;
+    private ServerMenu serverMenu;
 
     public CommunicateWithClient(PrintStream sendToClient, Scanner receiveFromClient) 
     {
@@ -42,6 +43,7 @@ public class CommunicateWithClient implements Runnable
     @Override
     public void run()
     {
+        int units;
         Login login;
         Command command;
         LoginAttempt attempt;
@@ -88,6 +90,36 @@ public class CommunicateWithClient implements Runnable
                     System.out.println((command.getArray().length == 1) ? "" : command.getArray()[1]);
                     break;
                     
+                case PURCHASE:
+                    ServerMenu.addSale(command.getArray()[3], 
+                            Integer.parseInt(command.getArray()[1]), 
+                            Integer.parseInt(command.getArray()[2]), 
+                            Calendar.getInstance());
+                    
+                    units = checkUnitsInStock(
+                            Integer.parseInt(command.getArray()[1]),
+                            Integer.parseInt(command.getArray()[2]),
+                            Integer.parseInt(command.getArray()[4])
+                    );
+                    
+                    ServerMenu.removeFromStock(
+                            Integer.parseInt(command.getArray()[1]), 
+                            units);
+                    
+                    sendUpdateUnit(Integer.parseInt(command.getArray()[1]), 
+                            units); 
+                    
+                    ServerMenu.notifyUsers(Integer.parseInt(command.getArray()[1]));
+                    
+                    break;
+                 
+                case ADD_DESIRE:
+                    ServerMenu.addDesire(command.getArray()[1], Integer.parseInt(command.getArray()[2]));
+                 break;
+                    
+                case DISCONNECT:
+                    ServerMenu.disconnectClient(command.getArray()[1]);
+                break;
                 default:
                     System.out.println(command.get());
                     break;
@@ -95,7 +127,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
     
-    public void sendProducts()
+    public synchronized void sendProducts()
     {
         List<Product> productlist = BringList();
         
@@ -115,7 +147,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
 
-    private void sendCategories() 
+    private synchronized void sendCategories() 
     {
         List<Category> list = BringCategoryList();
         for (Category c : list)
@@ -129,7 +161,7 @@ public class CommunicateWithClient implements Runnable
         }
     }
 
-    private void sendDesires(int codClient) 
+    private synchronized void sendDesires(int codClient) 
     {
         List<Integer> list;
         try
@@ -140,5 +172,34 @@ public class CommunicateWithClient implements Runnable
                 sendToClient(new Command(new String[]{SEND_DESIRE, String.valueOf(c)}).get());
             
         } catch (Exception ex) { }
+    }
+    
+    public synchronized void sendUpdateUnit(Integer code, Integer units){
+        
+        List<ClientStruct> listClients = ServerMenu.getClientList();
+        
+        for(ClientStruct client : listClients){
+            System.out.println(client.getUser().toString());
+        }
+        
+        for(ClientStruct client : listClients){
+            client.communicate.sendToClient(new Command(new String[]{
+                SEND_UPDATE, String.valueOf(code), String.valueOf(units)
+            }).get());
+        }
+    }
+
+    private synchronized int checkUnitsInStock(int codeProduct, int unitsPurchased, int codeSupplier)
+    {
+        int unitsResult;
+        List<Product> productlist = BringList();
+        List<Supplier> supplierlist = Server.getAllSupplier();
+        
+        unitsResult = productlist.get(codeProduct).getStockUnits() - unitsPurchased;
+        
+        if (unitsResult < MIN_QUANTITY)
+            unitsResult += supplierlist.get(codeSupplier).getMoreProducts(codeProduct);
+
+        return unitsResult;
     }
 }

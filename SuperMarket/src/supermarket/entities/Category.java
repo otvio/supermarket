@@ -4,6 +4,7 @@ package supermarket.entities;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
 import static server.Server.CATEGORIES_FILE;
 
 
@@ -34,7 +35,7 @@ public class Category
             
             pw.print(codCategory);
             pw.print(",");
-            pw.print(nameCategory);
+            pw.print(nameCategory.toLowerCase());
             pw.printf(",");
             pw.println(description);
             

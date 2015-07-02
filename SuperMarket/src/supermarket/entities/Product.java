@@ -5,6 +5,7 @@ import java.io.*;
 import java.util.*;
 import java.text.SimpleDateFormat;
 import static server.Server.PRODUCTS_FILE;
+import static supermarket.SuperMarket.printAdapted;
 
 public class Product
 {
@@ -41,24 +42,19 @@ public class Product
     }
     
 	
-	public void addFileProduct()
-	{
+    public void addFileProduct(boolean writeback)
+    {
         try
-		{
+        {
             File fp = new File(PRODUCTS_FILE);
-            FileWriter fw = new FileWriter(fp, true);
+            FileWriter fw = new FileWriter(fp, writeback);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
-            
+
             if(fp.exists() == false)
             { // caso o arquivo nao exista, cria um arquivo
                 fp.createNewFile();
             }
-			
-            /*
-            public Product(int codProduct, int codSupplier, int codCategory, 
-            int stockUnits, int orderedUnits, double unitPrice, 
-            String nameProduct, String validity) /*/
-            
+
             pw.print(this.codProduct);
             pw.print(",");
             pw.print(this.codSupplier);
@@ -74,12 +70,12 @@ public class Product
             pw.print(this.nameProduct);
             pw.print(",");
             pw.println(dateFormat.format(this.validityProduct.getTime()));
-            
+
             pw.close();
             fw.close();
         }
         catch(Exception e)
-		{
+        {
             System.out.println("Can't store in the file :(");
         }
     }
@@ -156,23 +152,25 @@ public class Product
 	
     public void printProduct(Category c)
     {
-        System.out.println("//--------------------------------------"); 
-        System.out.println("||Product Code: " + (this.getCodProduct()));
-        System.out.println("||Product name : " + this.getNameProduct());
-        System.out.println("||Price: " + this.getUnitPrice());
-        System.out.println("||Validity: " + dateFormat.format(this.validityProduct.getTime()));
+        System.out.println("//--------------------------------------\\\\"); 
+        printAdapted("Product code: " + (this.getCodProduct()));
+        printAdapted("Product name: " + this.getNameProduct());
+        printAdapted("Unit price: " + this.getUnitPrice());
+        printAdapted("Validity: " + dateFormat.format(this.validityProduct.getTime()));
         
         if (c != null)
-            System.out.println("||Category: " + c.getNameCategory());
+            printAdapted("Category: " + c.getNameCategory());
         
         if (this.getStockUnits() > 0)
-            System.out.println("||Units: " + this.getStockUnits());    
+            printAdapted("Units: " + this.getStockUnits());    
         else
-            System.out.println("||Product Unavailable!");
+            printAdapted("Product Unavailable!");
         
-        System.out.println("\\\\--------------------------------------\n\n"); 
+        System.out.println("\\\\--------------------------------------//\n\n"); 
     }
 
+    
+    
     public String getValidity()
     {
         return dateFormat.format(validityProduct.getTime());

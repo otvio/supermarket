@@ -1,13 +1,13 @@
 
 package client;
 
-import login.LoginAttempt;
 import command.*;
+import login.LoginAttempt;
 import static command.Command.*;
 
-import java.io.PrintStream;
 import java.net.Socket;
 import java.util.Scanner;
+import java.io.PrintStream;
 
 public class Client
 {
@@ -19,9 +19,11 @@ public class Client
     {
         // tentando se conectar ao servidor
         socket = new Socket("localhost", 12345);
-        System.out.println("::: Client Connected! :)");
-        System.out.println("::: Awaiting the server... ");
-
+        System.out.println("::::::::::::::::::::::::::::::");
+        System.out.println(":::  Client Connected! :)  :::");
+        System.out.println("::: Awaiting the server... :::");
+        System.out.println("::::::::::::::::::::::::::::::\n\n");
+        
         // criando a thread de comunicação com o servidor
         communicate = new CommunicateWithServer(this,
                         new PrintStream(socket.getOutputStream()), 
@@ -39,14 +41,18 @@ public class Client
         String ID, password, passwordConfirm;       // Strings para a confirmação de acesso do usuário
         String user_choice;                         // String para a opção de acesso no sistema
         
-        System.out.println("\n\t:::::    Welcome to the LORMarket!    :::::\n");
-
         do
         {
-            System.out.println("You are a\n"
-                                 + "   (1). New user\n"
-                                 + "   (2). Existent user\n\n"
-                                 + "Choice: ");
+            System.out.println("\n\t:::::::::::::::::::::::::::::::::::::::::::");
+            System.out.println(  "\t:::::    Welcome to the LORMarket!    :::::");
+            System.out.println(  "\t:::::::::::::::::::::::::::::::::::::::::::\n\n");
+        
+            System.out.println(":::::::::::::::::::::::::::::");
+            System.out.print(  "::  You are a              ::\n"
+                             + "::     (1). New user       ::\n"
+                             + "::     (2). Existent user  ::\n"
+                             + ":::::::::::::::::::::::::::::\n\n"
+                             + "::  Type your choice: ");
             user_choice = scanner.nextLine();
 
         } while ((!user_choice.equals("1")) && (!user_choice.equals("2"))); // Loop para escolher uma das duas opções
@@ -55,31 +61,31 @@ public class Client
         {
             System.out.println("Please, answer according to what will be asked.");
 
-            System.out.println("\n::: Personal information");
+            System.out.println("\n:::::: Personal information");
 
-            System.out.println("Name:");
+            System.out.print("::  Name: ");
             name = scanner.nextLine();       // Armazena o nome fornecido pelo usuário 
 
-            System.out.println("Address:");
+            System.out.print("::  Address: ");
             address = scanner.nextLine();    // Solicita o endereço
 
-            System.out.println("E-mail:");
+            System.out.print("::  E-mail: ");
             email = scanner.nextLine();      // Solicita o e-mail
 
-            System.out.println("Telephone:");
+            System.out.print("::  Telephone: ");
             telephone = scanner.nextLine();  // Solicita o telefone
 
-            System.out.println("\n::: Login information");
+            System.out.println("\n:::::: Login information");
 
-            System.out.println("ID/Nickname:");
+            System.out.print("::  ID/Nickname: ");
             ID = scanner.nextLine();         // Solicita o ID
 
             do
             {
-                System.out.println("Password:");
+                System.out.print("::  Password: ");
                 password = scanner.nextLine();          // Solicita a senha
 
-                System.out.println("Confirm the password:");
+                System.out.print("::  Confirm the password: ");
                 passwordConfirm = scanner.nextLine();   // Solicita a confirmação da senha
 
                 if (!password.equals(passwordConfirm))
@@ -96,10 +102,10 @@ public class Client
         }
         else
         {
-            System.out.println("ID/Nickname:");
+            System.out.print("::  ID/Nickname: ");
             ID = scanner.nextLine();         // Solicita o ID
 
-            System.out.println("Password:");
+            System.out.print("::  Password: ");
             password = scanner.nextLine();   // Solicita a senha
 
             communicate.sendToServer(

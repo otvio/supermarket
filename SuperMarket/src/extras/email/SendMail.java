@@ -1,8 +1,7 @@
 
-package email;
+package extras.email;
 
 import java.util.Properties;  
-import static email.DataEmail.*;
 import javax.mail.Message;  
 import javax.mail.Session;  
 import javax.mail.Transport;  
@@ -15,23 +14,17 @@ public class SendMail
 {
     private String mailSMTPServer;  
     private String mailSMTPServerPort;  
-      
+    public static final String USERNAME_GMAIL = "lormarket@gmail.com";
+    public static final String PASSWORD_GMAIL = "lordedalus";
+    
     /* 
      * quando instanciar um Objeto ja sera atribuido o servidor SMTP do GMAIL  
      * e a porta usada por ele 
      */  
-    public SendMail() { //Para o GMAIL   
+    public SendMail() { //Para o GMAIL
         mailSMTPServer = "smtp.gmail.com";  
         mailSMTPServerPort = "465";  
-    }  
-    /* 
-     * caso queira mudar o servidor e a porta, so enviar para o contrutor 
-     * os valor como string 
-     */  
-    public SendMail(String mailSMTPServer, String mailSMTPServerPort) { //Para outro Servidor  
-        this.mailSMTPServer = mailSMTPServer;  
-        this.mailSMTPServerPort = mailSMTPServerPort;  
-    }  
+    }
       
     public void sendMail(String to, String subject, String message) {  
           
@@ -86,7 +79,7 @@ public class SendMail
           
         //Objeto encarregado de enviar os dados para o email  
         Transport tr;  
-        try {  
+        try {
             tr = session.getTransport("smtp"); //define smtp para transporte  
             /* 
              *  1 - define o servidor smtp 
@@ -98,12 +91,7 @@ public class SendMail
             //envio da mensagem  
             tr.sendMessage(msg, msg.getAllRecipients());  
             tr.close();  
-        } catch (Exception e) {  
-            // TODO Auto-generated catch block  
-            System.out.println(">> Erro: Envio Mensagem");  
-            e.printStackTrace();  
-        }  
-  
+        } catch (Exception e) { }
     }  
 }
   
@@ -114,21 +102,13 @@ class SimpleAuth extends Authenticator
     public String password = null;  
   
   
-    public SimpleAuth(String user, String pwd) {  
+    public SimpleAuth(String user, String pwd) {
         username = user;  
         password = pwd;  
     }  
   
-    protected PasswordAuthentication getPasswordAuthentication() {  
+    @Override
+    protected PasswordAuthentication getPasswordAuthentication() {
         return new PasswordAuthentication (username,password);  
     }  
-}
-
-class Application
-{
-    public static void main (String[] args)
-    {
-        SendMail sm = new SendMail();
-        sm.sendMail(DESTINATION, SUBJECT, MESSAGE);
-    }
 }
