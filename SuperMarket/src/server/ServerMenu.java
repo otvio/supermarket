@@ -44,22 +44,39 @@ public class ServerMenu
 
         recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
         
+        Collections.sort(listProducts, new Comparator<Product>(){
+
+            @Override
+            public int compare(Product o1, Product o2) {
+                return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
+            }
+        });
+        
         do
         {
-            System.out.println("\n1 - Register new products");
-            System.out.println("2 - List all the products");
-            System.out.println("3 - Registering new Supplier");
-            System.out.println("4 - Add a new category");
-            System.out.println("5 - Generate PDF");
-            System.out.println("6 - Quit");
-            System.out.println("\n7 - See the list of users online");
+            System.out.println("");
+            System.out.println("::::::::::::::::::::::::::::::::::::::::::::");
+            System.out.println("::    1 - Register new products.          ::");
+            System.out.println("::    2 - List all the products.          ::");
+            System.out.println("::    3 - Registering new Supplier.       ::");
+            System.out.println("::    4 - Add a new category.             ::");
+            System.out.println("::    5 - Generate PDF.                   ::");
+            System.out.println("::    6 - Quit.                           ::");
+            System.out.println("::    7 - See the list of users online.   ::");
+            System.out.println("::::::::::::::::::::::::::::::::::::::::::::");
+            
+            System.out.print("\n:: Type your choice:");
                 
             choice = scanner.nextInt();
             
             if(choice == 1){
                 
                 code = (!listProducts.isEmpty()) ? (listProducts.get(listProducts.size() - 1).getCodProduct()+ 1) : 0;  // Código que será adicionado para o usuário
-                
+                code = -1;
+                for(Product p : listProducts){
+                    if(code < p.getCodProduct()) code = p.getCodProduct();
+                }
+                code++;
                 System.out.println("\nQuantity of products to add in the store:");
                 units = scanner.nextInt();
                 
@@ -78,14 +95,14 @@ public class ServerMenu
                 System.out.println("The name of the category:");
                 nameCategory = scannerstring.nextLine();
                     
-                codeSupplier = getSupplier(listSupplier, nameSupplier);
-                codeCategory = getCategory(listCategory, nameCategory);
+                codeSupplier = getSupplier(listSupplier, nameSupplier.toLowerCase());
+                codeCategory = getCategory(listCategory, nameCategory.toLowerCase());
                 
                 if(codeCategory != -1 && codeSupplier != -1){
                 
                     Product product = new Product(code, codeSupplier, codeCategory, units, units, price, nameProduct, expirationdate);
                 
-                    product.addFileProduct();
+                    product.addFileProduct(true);
                 
                     Collections.sort(listProducts, new Comparator<Product>(){
 
@@ -94,14 +111,17 @@ public class ServerMenu
                             return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
                         }
                     });
+                    System.out.println(Arrays.asList(listProducts));
+                    
+                    
                 }
                 
                 if(codeCategory == -1){
                     System.out.println("\n:::The name of the category is invalid, please try another one:::");
                 }
-                if(codeSupplier == -1){
-                    System.out.println("\n:::The name of the supplier is invalid, please try another one:::");
-                }
+                //backup(listProducts, listCategory, listSupplier, userList, listSale, desireList);
+                //recoverAllLists(listProducts, listCategory, listSupplier, userList, listSale, desireList);
+                //System.exit(0);
             }
             
             else if(choice == 2){

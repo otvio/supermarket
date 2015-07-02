@@ -42,12 +42,12 @@ public class Product
     }
     
 	
-    public void addFileProduct()
+    public void addFileProduct(boolean writeback)
     {
         try
         {
             File fp = new File(PRODUCTS_FILE);
-            FileWriter fw = new FileWriter(fp, true);
+            FileWriter fw = new FileWriter(fp, writeback);
             PrintWriter pw = new PrintWriter(fw); // cria um PrintWriter que irá escrever no arquivo
 
             if(fp.exists() == false)
@@ -67,7 +67,7 @@ public class Product
             pw.print(",");
             pw.print(this.unitPrice);
             pw.print(",");
-            pw.print(this.nameProduct);
+            pw.print(this.nameProduct.toLowerCase());
             pw.print(",");
             pw.println(dateFormat.format(this.validityProduct.getTime()));
 

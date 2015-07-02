@@ -86,7 +86,7 @@ public class Server
         new File(CATEGORIES_FILE).delete();
         
         for(Product product : listProducts){
-            product.addFileProduct();
+            product.addFileProduct(false);
         }
         for(Category category : listCategory){
             category.addFileCategory();

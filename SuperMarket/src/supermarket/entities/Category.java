@@ -35,7 +35,7 @@ public class Category
             
             pw.print(codCategory);
             pw.print(",");
-            pw.print(nameCategory);
+            pw.print(nameCategory.toLowerCase());
             pw.printf(",");
             pw.println(description);
             
