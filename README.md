@@ -15,20 +15,9 @@ Professor:
 
 - Adenilso Simao   -  Programação Orientada a Objetos (P.O.O).    
 
+O sistema foi implementado usando o ambiente Netbeans IDE 8.0.2 com Java 7.
+
 ####Como executar:
-
-No Linux (Terminal):
-
-    1 - Descompacte o zip para a pasta desejada.
-
-    2 - Abra o terminal e dentro do diretório onde o zip foi deszipado, vá para a pasta "".
-
-    3 - Digite a seguinte linha de comando no terminal: java -jar .jar
-
-    4 - Ver (início do programa).
-
-
-No Windows (Netbeans):
 
     1 - Descompacte o zip para a pasta desejada.
 
