@@ -18,7 +18,8 @@ public class Command
     public static final String SEND_PRODUCT = "@LOR@MARKET@:::SEND_PRODUCT";
     public static final String SEND_CATEGORY = "@LOR@MARKET@:::SEND_CATEGORY";
     public static final String REMOVE_DESIRE = "@LOR@MARKET@:::REMOVE_DESIRE";
-  
+    
+    
     private String command;
     private String[] commandSplitted;
     

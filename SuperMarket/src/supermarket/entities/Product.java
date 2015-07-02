@@ -67,7 +67,7 @@ public class Product
             pw.print(",");
             pw.print(this.unitPrice);
             pw.print(",");
-            pw.print(this.nameProduct.toLowerCase());
+            pw.print(this.nameProduct);
             pw.print(",");
             pw.println(dateFormat.format(this.validityProduct.getTime()));
 

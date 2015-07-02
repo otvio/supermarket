@@ -142,6 +142,8 @@ public class CommunicateWithServer implements Runnable
                 Double.parseDouble(command.getArray()[6]), 
                 command.getArray()[7], command.getArray()[8]));
     }
+    
+    
 
     private synchronized void addCategory(Command command)
     {

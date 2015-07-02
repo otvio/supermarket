@@ -21,6 +21,7 @@ public class ServerMenu
     private static List <Supplier> listSupplier = getAllSupplier();
     private static List<Category> categoryList = getAllCategories();
     private static Map<User, List<Integer>> desireList = getAllDesireList(userList);
+    
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Objeto para a data da valida
 
     public ServerMenu(List<ClientStruct> clientList)
@@ -95,8 +96,8 @@ public class ServerMenu
                 System.out.println("The name of the category:");
                 nameCategory = scannerstring.nextLine();
                     
-                codeSupplier = getSupplier(listSupplier, nameSupplier.toLowerCase());
-                codeCategory = getCategory(listCategory, nameCategory.toLowerCase());
+                codeSupplier = getSupplier(listSupplier, nameSupplier);
+                codeCategory = getCategory(listCategory, nameCategory);
                 
                 if(codeCategory != -1 && codeSupplier != -1){
                 
@@ -111,9 +112,7 @@ public class ServerMenu
                             return o1.getCodProduct() < o2.getCodProduct() ? -1 : 1;
                         }
                     });
-                    System.out.println(Arrays.asList(listProducts));
-                    
-                    
+                    sendToClient(product);
                 }
                 
                 if(codeCategory == -1){
@@ -418,4 +417,14 @@ public class ServerMenu
         return (desireList);
     }
     
+    public void sendToClient( Product product){
+        for (ClientStruct client : clientList) {
+            client.communicate.sendToClient(new Command( new String[]{
+                SEND_PRODUCT, String.valueOf(product.getCodProduct()), String.valueOf(product.getCodSupplier()),
+                String.valueOf(product.getCodCategory()),
+                String.valueOf(product.getStockUnits()), String.valueOf(product.getOrderedUnits()),
+                String.valueOf(product.getUnitPrice()), product.getNameProduct(), product.getValidity()
+            }).get());
+        }
+    }
 }
