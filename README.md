@@ -17,6 +17,8 @@ Professor:
 
 O sistema foi implementado usando o ambiente Netbeans IDE 8.0.2 com Java 7.
 
+####Obs: versão pronta em "Releases".
+
 ####Como executar:
 
     1 - Descompacte o zip para a pasta desejada.
