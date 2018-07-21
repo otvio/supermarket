@@ -11,7 +11,7 @@ Membros do Grupo: nº USP
 
 - Luis Ricardo Guabiraba da Silva   8937402
 
-- Otávio Augusto de Oliveira        8936801
+- Otávio Augusto Ferreira Sousa     8936801
 
 O sistema foi implementado usando o ambiente Netbeans IDE 8.0.2 com Java 7.
 
@@ -48,7 +48,7 @@ Para executar a aplicação do cliente, vá até o package "client", e após iss
 do mouse na classe Client, e escolha a opção "Executar arquivo".	
 
 Primeiramente será solicitado para o usuário escolher entre criar um novo usuário (1), ou logar com um
-usuário existente(2). Caso o usuário escolha a opção 1, irá criar um novo usuário, ou caso a opção escolhida
+usuário existente (2). Caso o usuário escolha a opção 1, irá criar um novo usuário, ou caso a opção escolhida
 seja (2), ai terá que entrar com um login e uma senha.
 
 Quando esta etapa terminar, o usuário estará logado e pronto para utilizar o sistema, e temos 5
