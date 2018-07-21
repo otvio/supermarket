@@ -1,8 +1,9 @@
-## Prof. Adenilso da Silva Simão
 ## SSC0103 - Programacão Orientada a Objetos
 ## Trabalho 4
 
 ###        ...:::  LORMarket  :::...
+
+Prof. Adenilso da Silva Simão.
 
 Membros do Grupo: nº USP
 
