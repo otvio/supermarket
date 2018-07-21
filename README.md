@@ -1,5 +1,5 @@
-#supermarket
-##SSC0103 - Programacão Orientada a Objetos - Prof. Adenilso da Silva Simão - Trabalho 4
+# supermarket
+## SSC0103 - Programacão Orientada a Objetos - Prof. Adenilso da Silva Simão - Trabalho 4
 
 ###        ...:::  LORMarket  :::...
 
@@ -17,9 +17,9 @@ Professor:
 
 O sistema foi implementado usando o ambiente Netbeans IDE 8.0.2 com Java 7.
 
-####Obs: versão pronta em "Releases".
+#### Obs: versão pronta em "Releases".
 
-####Como executar:
+#### Como executar:
 
     1 - Descompacte o zip para a pasta desejada.
 
@@ -29,15 +29,15 @@ O sistema foi implementado usando o ambiente Netbeans IDE 8.0.2 com Java 7.
 
 	- Para executar o servidor, vá até o package "server", e após isso, clique com o botão direito do mouse
 	na classe Server, e logo após isso, escolha a opção "Executar arquivo".
-	- Para executar a aplicação do client, vá até o package "client", e após isso, clique com o botão direito
+	- Para executar a aplicação do cliente, vá até o package "client", e após isso, clique com o botão direito
 	do mouse na classe Client, e escolha a opção "Executar arquivo".
 
-    4 - Ver (início do programa).
+    4 - Ver "Início do programa".
 
 
-####Início do programa:
+#### Início do programa:
 	
-	Inicialmente o usuário terá a opção de escolher a aplicação que será executada, servidor ou cliente.
+	Inicialmente o usuário terá a opção de escolher a aplicação que será executada, servidor ou cliente. É necessário que a aplicação do servidor esteja em execução antes de tentar executar a aplicação do cliente. Caso contrário, um erro será exibido na interface do cliente.
 
 Servidor:
 
@@ -62,17 +62,17 @@ Cliente:
 	4 - Caso o usuário escolha a opção (4), serão listados todos os produtos, e o usuário poderá escolher o código
 	do produto que será comprado, e logo após isso, ele deverá escolher a quantidade de unidades a ser adquirida.
 
-####Extras:
+#### Extras:
 
-#####Gerador de PDF:
+##### Gerador de PDF:
 
   Para a criação de relatórios de vendas em pdf utilizamos a biblioteca "iText - 5.0.5", aonde apresentamos as vendas feitas em um intervalo de tempo selecionado pela aplicação servidor, e no final apresentamos umas estatísticas básicas sobre as vendas.
   
-#####Email:
+##### Email:
 
   A notificação de produtos indisponíveis é realizada através da JavaMail API, no momento em que o estoque é abastecido.
   
-#####Design Patterns:
+##### Design Patterns:
 
   O padrão utilizado foi o Singleton Pattern. Foi utilizado nas classes "server.Server" e na "server.ClientConnection", para poder limitar a quantidade de instancias do objeto, pois do modo que o sistema foi modelado é preferível que haja apenas uma instancia das classes Server e ClientConnection.
   
