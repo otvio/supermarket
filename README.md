@@ -34,25 +34,23 @@ Inicialmente o usuário terá a opção de escolher a aplicação que será exec
 
 ##### Servidor:
 
-Para executar o servidor, vá até o package "server", e após isso, clique com o botão direito do mouse
-na classe Server, e logo após isso, escolha a opção "Executar arquivo".
+Para executar o servidor, vá até o package "server", clique com o botão direito do mouse na classe Server e escolha a opção "Executar arquivo".
 
-Logo após inicializado o servidor, pode-se observar o menu do servidor, com algumas opções, (1) registrar novos
+Logo após inicializado o servidor, pode-se observar o menu do servidor, com algumas opções: (1) registrar novos
 produtos, (2) listar todos os produtos, (3) registrar novos fornecedores, (4) adicionar uma nova categoria, (5)
 gerar um pdf das vendas, podendo optar por escolher as vendas do dia ou do mês, (6) finalizar aplicação do servidor.
 
 
 ##### Cliente:
 	
-Para executar a aplicação do cliente, vá até o package "client", e após isso, clique com o botão direito
-do mouse na classe Client, e escolha a opção "Executar arquivo".	
+Para executar a aplicação do cliente, vá até o package "client", clique com o botão direito do mouse na classe Client e escolha a opção "Executar arquivo".	
 
 Primeiramente será solicitado para o usuário escolher entre criar um novo usuário (1), ou logar com um
 usuário existente (2). Caso o usuário escolha a opção 1, irá criar um novo usuário, ou caso a opção escolhida
 seja (2), ai terá que entrar com um login e uma senha.
 
 Quando esta etapa terminar, o usuário estará logado e pronto para utilizar o sistema, e temos 5
-opções de escolha. (1) lista todos os produtos do supermercado, (2) lista todos os produtos na lista de desejos,
+opções de escolha: (1) lista todos os produtos do supermercado, (2) lista todos os produtos na lista de desejos,
 (3) adiciona um produto na lista de desejos, (4) realizar a compra de um produto, e (5) para sair do programa.
 
 Caso o usuário escolha a opção (3), serão listados todos os produtos, e o usuário poderá escolher o código
